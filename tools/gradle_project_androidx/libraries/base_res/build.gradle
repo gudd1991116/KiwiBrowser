@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+apply from: "$rootDir/gradle/android-lint.gradle"
+
+android {
+    namespace 'org.chromium.base'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+}
+
+afterEvaluate {
+    def tasksToDisable = tasks.findAll {
+        return it.name.endsWith('BuildConfig')  // causes unwanted BuildConfig.java )
+    }
+    tasksToDisable.each { Task task ->
+      task.enabled = false
+    }
+}
