@@ -410,7 +410,7 @@ public class ChromeBrowserInitializer {
                     // stale natively-loaded resources are not reloaded (http://crbug.com/552618).
                     if (!mInitialLocale.equals(Locale.getDefault())) {
                         Log.e(TAG, "Killing process because of locale change.");
-                        Process.killProcess(Process.myPid());
+                        //Process.killProcess(Process.myPid());
                     }
                 }
             }
