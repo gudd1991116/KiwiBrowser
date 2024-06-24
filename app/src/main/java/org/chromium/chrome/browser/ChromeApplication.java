@@ -8,7 +8,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 
 import org.chromium.base.ActivityState;
 import org.chromium.base.ApplicationState;
@@ -45,31 +50,58 @@ import org.chromium.chrome.browser.vr_shell.VrShellDelegate;
 
 import org.chromium.chrome.browser.BackgroundExtensions;
 
+import java.lang.reflect.Method;
+import java.util.Locale;
+import java.util.Objects;
+
 /**
  * Basic application functionality that should be shared among all browser applications that use
  * chrome layer.
  */
 public class ChromeApplication extends Application {
     private static final String COMMAND_LINE_FILE = "chrome-command-line";
-    private static final String TAG = "ChromiumApplication";
+    private static final String TAG = "MetaBrowserApp";
 
     private static DocumentTabModelSelector sDocumentTabModelSelector;
     private DiscardableReferencePool mReferencePool;
 
     public BackgroundExtensions mBackgroundExtensions;
+    public static int inistanceID = 0;
+
+    @Nullable
+    private io.horizontalsystems.bankwallet.core.App wApp;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        boolean browserProcess = ContextUtils.isMainProcess();
+        String proName = ContextUtils.getProcessName();
+        if (browserProcess && wApp != null){
+            try {
+                boolean wAppInitied = io.horizontalsystems.bankwallet.core.App.instance != null;
+                Log.v(TAG,"onCreate wallet App at process:" + proName);
+                androidx.work.WorkManager.initialize(this, Objects.requireNonNull(wApp).getWorkManagerConfiguration());
+                Log.v(TAG,"onCreate wallet wApp initiaked :" + wAppInitied);
+                Objects.requireNonNull(wApp).onCreate();//在调用onCreate
+            }catch (Throwable e){
+                Log.e("ChromeApplication","onCreate with exception:" + e.toString());
+            }
+        }//end browserPross
+    }
 
     // Called by the framework for ALL processes. Runs before ContentProviders are created.
     // Quirk: context.getApplicationContext() returns null during this method.
     @Override
     protected void attachBaseContext(Context context) {
         boolean browserProcess = ContextUtils.isMainProcess();
+        String processName = ContextUtils.getProcessName();
         if (browserProcess) {
             UmaUtils.recordMainEntryPointTime();
         }
-        super.attachBaseContext(context);
+        super.attachBaseContext(setLocal(context));
         checkAppBeingReplaced();
         ContextUtils.initApplicationContext(this);
-
+        inistanceID++;
+        Log.v(TAG,"ID" + inistanceID + " App run in process: " + processName);
         if (browserProcess) {
             if (BuildConfig.IS_MULTIDEX_ENABLED) {
                 ChromiumMultiDexInstaller.install(this);
@@ -120,6 +152,23 @@ public class ChromeApplication extends Application {
             if (BuildHooksConfig.REPORT_JAVA_ASSERT) {
                 BuildHooks.setReportAssertionCallback(
                         PureJavaExceptionReporter::reportJavaException);
+            }
+        }
+
+        if (browserProcess && wApp == null){
+            // Initial wallet
+            try {
+                String proName = ContextUtils.getProcessName();
+                Log.v(TAG,"attachBaseContext wallet App in process:"+ proName);
+                Log.v(TAG,"Initial Wallet-APP object !!");
+                wApp = io.horizontalsystems.bankwallet.core.App.NewApp();
+                Method sAttachBaseContextMethod = io.horizontalsystems.bankwallet.core.App.class.getDeclaredMethod("attachBaseContext",Context.class);
+                sAttachBaseContextMethod.setAccessible(true);
+                sAttachBaseContextMethod.invoke(wApp,context); //先attach
+                Objects.requireNonNull(wApp).setLocale(Locale.ENGLISH);
+
+            }catch (Throwable e){
+                Log.e("ChromeApplication","attachBaseContext wallet app exception:" + e.toString());
             }
         }
     }
@@ -212,5 +261,42 @@ public class ChromeApplication extends Application {
             @Override
             public void onDenied() {}
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration configure){
+        super.onConfigurationChanged(configure);
+        try {
+            Log.d(TAG,"onConfigurationChanged wallet App");
+            //wApp.onConfigurationChanged(configure);
+        }catch (Throwable e){
+            Log.e("ChromeApplication","onCreate with exception:" + e.toString());
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private Context setLocal(Context context){
+        Configuration configuration = Resources.getSystem().getConfiguration();
+        String versionName = com.bose.meta.browser.BuildConfig.VERSION_NAME;
+        Locale needLocal = null;
+        if(versionName.endsWith(".cn")){
+            needLocal = Locale.CHINA;
+            Locale.setDefault(needLocal);
+        }
+        if(versionName.endsWith(".en")){
+            needLocal = Locale.ENGLISH;
+            Locale.setDefault(needLocal);
+        }
+        if(needLocal != null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                configuration.setLocale(needLocal);
+                return context.createConfigurationContext(configuration);
+            } else {
+                configuration.locale = needLocal;
+                getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+                return context;
+            }
+        }
+        else  return context;
     }
 }

@@ -193,6 +193,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import io.horizontalsystems.bankwallet.modules.launcher.LaunchModule;
+
 /**
  * A {@link AsyncInitializationActivity} that builds and manages a {@link CompositorViewHolder}
  * and associated classes.
@@ -2304,7 +2306,10 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             IntentUtils.safeStartActivity(ContextUtils.getApplicationContext(), intent);
         } else if (id == R.id.reader_mode_prefs_id) {
             DomDistillerUIUtils.openSettings(currentTab.getWebContents());
-        } else {
+        } else if (id == R.id.bose_wallet_kit_id) {//<[wallet] : code tag for open wallet action
+            LaunchModule.INSTANCE.start(this);
+        }
+        else {
             return false;
         }
         return true;
