@@ -31,6 +31,8 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -273,7 +275,8 @@ public class BrowserActionsIntent {
             mIntent.setData(mUri);
             mIntent.putExtra(EXTRA_TYPE, mType);
             mIntent.putParcelableArrayListExtra(EXTRA_MENU_ITEMS, mMenuItems);
-            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
+            //PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
+            PendingIntent pendingIntent = PendingIntentProvider.buildPendingIntentActivity(mContext,new Intent(),0,0);
             mIntent.putExtra(EXTRA_APP_ID, pendingIntent);
             if (mOnItemSelectedPendingIntent != null) {
                 mIntent.putExtra(

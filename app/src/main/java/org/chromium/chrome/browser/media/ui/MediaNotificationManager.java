@@ -46,6 +46,7 @@ import org.chromium.chrome.browser.notifications.ChromeNotificationBuilder;
 import org.chromium.chrome.browser.notifications.NotificationBuilderFactory;
 import org.chromium.chrome.browser.notifications.NotificationConstants;
 import org.chromium.chrome.browser.notifications.NotificationUmaTracker;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 import org.chromium.chrome.browser.notifications.channels.ChannelDefinitions;
 import org.chromium.content_public.common.MediaMetadata;
 
@@ -55,6 +56,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import static org.chromium.chrome.browser.notifications.PendingIntentProvider.buildPendingIntent;
 
 /**
  * A class for notifications that provide information and optional media controls for a given media.
@@ -553,7 +556,8 @@ public class MediaNotificationManager {
 
     private PendingIntent createPendingIntent(String action) {
         Intent intent = createIntent().setAction(action);
-        return PendingIntent.getService(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        //return PendingIntent.getService(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return buildPendingIntent(getContext(),intent,0);
     }
 
     private Class<?> getButtonReceiverClass() {
@@ -967,9 +971,13 @@ public class MediaNotificationManager {
         // The intent will currently only be null when using a custom tab.
         // TODO(avayvod) work out what we should do in this case. See https://crbug.com/585395.
         if (mMediaNotificationInfo.contentIntent != null) {
-            mNotificationBuilder.setContentIntent(PendingIntent.getActivity(getContext(),
-                    mMediaNotificationInfo.tabId, mMediaNotificationInfo.contentIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT));
+            PendingIntent intent = PendingIntentProvider.buildPendingIntentActivity(getContext(),
+                    mMediaNotificationInfo.contentIntent,mMediaNotificationInfo.tabId,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            mNotificationBuilder.setContentIntent(intent);
+            //mNotificationBuilder.setContentIntent(PendingIntent.getActivity(getContext(),
+            //        mMediaNotificationInfo.tabId, mMediaNotificationInfo.contentIntent,
+            //        PendingIntent.FLAG_UPDATE_CURRENT));
             // Set FLAG_UPDATE_CURRENT so that the intent extras is updated, otherwise the
             // intent extras will stay the same for the same tab.
         }

@@ -19,6 +19,7 @@ import android.widget.RemoteViews;
 import com.google.android.apps.chrome.appwidget.bookmarks.BookmarkThumbnailWidgetProvider;
 
 import org.chromium.chrome.R;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 import org.chromium.chrome.browser.util.IntentUtils;
 
 /**
@@ -123,9 +124,9 @@ public class BookmarkWidgetProvider extends AppWidgetProvider {
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.bookmarks_list);
             Intent ic = new Intent(context, BookmarkWidgetProxy.class);
-            views.setPendingIntentTemplate(R.id.bookmarks_list,
-                    PendingIntent.getBroadcast(context, 0, ic,
-                    PendingIntent.FLAG_UPDATE_CURRENT));
+            PendingIntent pendingIntent = PendingIntentProvider.buildPendingIntentBroadcast(
+                    context,ic,0,PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.bookmarks_list,pendingIntent);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }

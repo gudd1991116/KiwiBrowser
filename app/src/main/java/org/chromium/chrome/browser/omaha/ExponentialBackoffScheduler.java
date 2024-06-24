@@ -18,6 +18,8 @@ import java.util.Random;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import static org.chromium.chrome.browser.notifications.PendingIntentProvider.buildPendingIntent;
+
 /**
  * Manages a timer that implements exponential backoff for failed attempts.
  *
@@ -79,7 +81,8 @@ public class ExponentialBackoffScheduler {
      * @return the timestamp of the scheduled intent
      */
     public long createAlarm(Intent intent, long timestamp) {
-        PendingIntent retryPIntent = PendingIntent.getService(mContext, 0, intent, 0);
+        //PendingIntent retryPIntent = PendingIntent.getService(mContext, 0, intent, 0);
+        PendingIntent retryPIntent = buildPendingIntent(mContext,intent,0,0);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         setAlarm(am, timestamp, retryPIntent);
         return timestamp;
@@ -91,8 +94,10 @@ public class ExponentialBackoffScheduler {
      * @return whether or not an alarm was canceled.
      */
     public boolean cancelAlarm(Intent scheduledIntent) {
-        PendingIntent pendingIntent = PendingIntent.getService(
-                mContext, 0, scheduledIntent, PendingIntent.FLAG_NO_CREATE);
+        //PendingIntent pendingIntent = PendingIntent.getService(
+        //        mContext, 0, scheduledIntent, PendingIntent.FLAG_NO_CREATE);
+        PendingIntent pendingIntent = buildPendingIntent(mContext,scheduledIntent,
+                0,PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             am.cancel(pendingIntent);

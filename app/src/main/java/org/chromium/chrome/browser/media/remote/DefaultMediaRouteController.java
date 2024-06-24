@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import androidx.mediarouter.media.MediaControlIntent;
@@ -120,19 +121,21 @@ public class DefaultMediaRouteController extends AbstractMediaRouteController {
         if (mediaRouterInitializationFailed()) return false;
 
         ApplicationStatus.registerApplicationStateListener(mApplicationStateListener);
+		int flag = PendingIntent.FLAG_UPDATE_CURRENT;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag |= PendingIntent.FLAG_IMMUTABLE;
 
         if (mSessionStatusUpdateIntent == null) {
             Intent sessionStatusUpdateIntent = new Intent(ACTION_RECEIVE_SESSION_STATUS_UPDATE);
             sessionStatusUpdateIntent.addCategory(mIntentCategory);
-            mSessionStatusUpdateIntent = PendingIntent.getBroadcast(getContext(), 0,
-                    sessionStatusUpdateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mSessionStatusUpdateIntent = PendingIntent.getBroadcast(getContext(), 0,/*FLAG_IMMUTABLE*/
+                    sessionStatusUpdateIntent, flag);
         }
 
         if (mMediaStatusUpdateIntent == null) {
             Intent mediaStatusUpdateIntent = new Intent(ACTION_RECEIVE_MEDIA_STATUS_UPDATE);
             mediaStatusUpdateIntent.addCategory(mIntentCategory);
-            mMediaStatusUpdateIntent = PendingIntent.getBroadcast(getContext(), 0,
-                    mediaStatusUpdateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mMediaStatusUpdateIntent = PendingIntent.getBroadcast(getContext(), 0,/*FLAG_IMMUTABLE*/
+                    mediaStatusUpdateIntent, flag);
         }
 
         return true;

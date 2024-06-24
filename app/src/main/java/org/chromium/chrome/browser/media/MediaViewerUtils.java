@@ -23,6 +23,7 @@ import org.chromium.chrome.R;
 import org.chromium.chrome.browser.IntentHandler;
 import org.chromium.chrome.browser.customtabs.CustomTabIntentDataProvider;
 import org.chromium.chrome.browser.document.ChromeLauncherActivity;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 
 import java.util.Locale;
 
@@ -66,15 +67,20 @@ public class MediaViewerUtils {
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             String openWithStr = context.getString(R.string.download_manager_open_with);
             try (StrictModeContext unused = StrictModeContext.allowAllVmPolicies()) {
-                PendingIntent pendingViewIntent = PendingIntent.getActivity(
-                        context, 0, chooserIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                //PendingIntent pendingViewIntent = PendingIntent.getActivity(
+                //        context, 0, chooserIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent pendingViewIntent = PendingIntentProvider.buildPendingIntentActivity(
+                        context,chooserIntent,0,PendingIntent.FLAG_CANCEL_CURRENT);
                 builder.addMenuItem(openWithStr, pendingViewIntent);
             }
         }
 
         // Create a PendingIntent that shares the file with external apps.
-        PendingIntent pendingShareIntent = PendingIntent.getActivity(context, 0,
-                createShareIntent(contentUri, mimeType), PendingIntent.FLAG_CANCEL_CURRENT);
+        //PendingIntent pendingShareIntent = PendingIntent.getActivity(context, 0,
+        //        createShareIntent(contentUri, mimeType), PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingShareIntent = PendingIntentProvider.buildPendingIntentActivity(
+                context,createShareIntent(contentUri, mimeType),0,PendingIntent.FLAG_CANCEL_CURRENT);
+
         builder.setActionButton(
                 shareIcon, context.getString(R.string.share), pendingShareIntent, true);
 

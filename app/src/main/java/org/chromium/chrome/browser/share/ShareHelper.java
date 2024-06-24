@@ -45,6 +45,7 @@ import org.chromium.base.StreamUtil;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.metrics.CachedMetrics;
 import org.chromium.chrome.R;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 import org.chromium.content_public.browser.WebContents;
 import org.chromium.ui.UiUtils;
 
@@ -218,8 +219,10 @@ public class ShareHelper {
             intent.setPackage(activity.getPackageName());
             intent.putExtra(EXTRA_RECEIVER_TOKEN, sLastRegisteredReceiver.hashCode());
             intent.putExtra(EXTRA_SOURCE_PACKAGE_NAME, sourcePackageName);
-            final PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, intent,
-                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            //final PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, intent,
+            //        PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            final PendingIntent pendingIntent = PendingIntentProvider.buildPendingIntentBroadcast(
+                    activity,intent,0,PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
             Intent chooserIntent = Intent.createChooser(sharingIntent,
                     activity.getString(R.string.share_link_chooser_title),
                     pendingIntent.getIntentSender());

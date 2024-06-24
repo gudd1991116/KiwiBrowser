@@ -350,8 +350,10 @@ public class NotificationPlatformBridge {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
 
-        return PendingIntent.getBroadcast(
-                context, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //return PendingIntent.getBroadcast(
+        //        context, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return  PendingIntentProvider.buildPendingIntentBroadcast(context,intent,PENDING_INTENT_REQUEST_CODE,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -609,9 +611,11 @@ public class NotificationPlatformBridge {
             settingsIntent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
                     SingleWebsitePreferences.createFragmentArgsForSite(origin));
 
-            PendingIntent pendingSettingsIntent = PendingIntent.getActivity(context,
-                    PENDING_INTENT_REQUEST_CODE, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //PendingIntent pendingSettingsIntent = PendingIntent.getActivity(context,
+            //        PENDING_INTENT_REQUEST_CODE, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            PendingIntent pendingSettingsIntent = PendingIntentProvider.buildPendingIntentActivity(
+                    context,settingsIntent,PENDING_INTENT_REQUEST_CODE,PendingIntent.FLAG_UPDATE_CURRENT);
             // If action buttons are displayed, there isn't room for the full Site Settings button
             // label and icon, so abbreviate it. This has the unfortunate side-effect of
             // unnecessarily abbreviating it on Android Wear also (crbug.com/576656). If custom

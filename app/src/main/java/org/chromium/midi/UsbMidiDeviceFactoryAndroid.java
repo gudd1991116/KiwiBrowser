@@ -13,6 +13,7 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Parcelable;
 
 import org.chromium.base.ContextUtils;
@@ -147,9 +148,11 @@ class UsbMidiDeviceFactoryAndroid {
             if (iface.getInterfaceClass() == UsbConstants.USB_CLASS_AUDIO
                     && iface.getInterfaceSubclass() == UsbMidiDeviceAndroid.MIDI_SUBCLASS) {
                 // There is at least one interface supporting MIDI.
+				int flag = 0;
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag |= PendingIntent.FLAG_IMMUTABLE;
                 mUsbManager.requestPermission(device,
-                        PendingIntent.getBroadcast(ContextUtils.getApplicationContext(), 0,
-                                new Intent(ACTION_USB_PERMISSION), 0));
+                        PendingIntent.getBroadcast(ContextUtils.getApplicationContext(), 0,/*FLAG_IMMUTABLE*/
+                                new Intent(ACTION_USB_PERMISSION), flag));
                 mRequestedDevices.add(device);
                 break;
             }

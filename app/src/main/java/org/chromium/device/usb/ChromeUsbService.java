@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 
 import org.chromium.base.ContextUtils;
 import org.chromium.base.Log;
@@ -66,8 +67,10 @@ final class ChromeUsbService {
         if (mUsbManager.hasPermission(device)) {
             nativeDevicePermissionRequestComplete(mUsbServiceAndroid, device.getDeviceId(), true);
         } else {
-            PendingIntent intent = PendingIntent.getBroadcast(
-                    ContextUtils.getApplicationContext(), 0, new Intent(ACTION_USB_PERMISSION), 0);
+			int flag = 0;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag |= PendingIntent.FLAG_IMMUTABLE;
+            PendingIntent intent = PendingIntent.getBroadcast(/*FLAG_IMMUTABLE*/
+                    ContextUtils.getApplicationContext(), 0, new Intent(ACTION_USB_PERMISSION), flag);
             mUsbManager.requestPermission(wrapper.getDevice(), intent);
         }
     }

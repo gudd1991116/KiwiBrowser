@@ -27,6 +27,7 @@ import org.chromium.chrome.browser.notifications.ChromeNotificationBuilder;
 import org.chromium.chrome.browser.notifications.NotificationBuilderFactory;
 import org.chromium.chrome.browser.notifications.NotificationConstants;
 import org.chromium.chrome.browser.notifications.NotificationUmaTracker;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 import org.chromium.chrome.browser.notifications.channels.ChannelDefinitions;
 import org.chromium.chrome.browser.tab.Tab;
 import org.chromium.chrome.browser.tabmodel.TabModel.TabLaunchType;
@@ -246,8 +247,11 @@ public class BrowserActionsService extends Service {
         sTitleResId = getNotificationTitleId(isUpdate);
         builder.setContentTitle(this.getString(sTitleResId));
         sNotificationIntent = buildNotificationIntent(isUpdate, tabId);
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
-                this, 0, sNotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+        //        this, 0, sNotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notifyPendingIntent = PendingIntentProvider.buildPendingIntentActivity(
+                  this,sNotificationIntent,0,PendingIntent.FLAG_UPDATE_CURRENT);
+
         builder.setContentIntent(notifyPendingIntent);
         return builder;
     }

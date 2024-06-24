@@ -11,6 +11,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+
 import androidx.core.app.NotificationCompat;
 
 import org.chromium.base.metrics.RecordUserAction;
@@ -66,18 +68,20 @@ class WebappActionsNotificationManager {
     }
 
     private Notification createNotification() {
-        PendingIntent focusIntent = PendingIntent.getActivity(mWebappActivity, 0,
+		int flag = PendingIntent.FLAG_UPDATE_CURRENT;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag |= PendingIntent.FLAG_IMMUTABLE;
+        PendingIntent focusIntent = PendingIntent.getActivity(mWebappActivity, 0,/*FLAG*/
                 new Intent(mWebappActivity, mWebappActivity.getClass()).setAction(ACTION_FOCUS),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                flag);
 
-        PendingIntent openInChromeIntent = PendingIntent.getActivity(mWebappActivity, 0,
+        PendingIntent openInChromeIntent = PendingIntent.getActivity(mWebappActivity, 0,/*FLAG*/
                 new Intent(mWebappActivity, mWebappActivity.getClass())
                         .setAction(ACTION_OPEN_IN_CHROME),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                flag);
 
-        PendingIntent shareIntent = PendingIntent.getActivity(mWebappActivity, 0,
+        PendingIntent shareIntent = PendingIntent.getActivity(mWebappActivity, 0,/*FLAG*/
                 new Intent(mWebappActivity, mWebappActivity.getClass()).setAction(ACTION_SHARE),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                flag);
 
         return NotificationBuilderFactory
                 .createChromeNotificationBuilder(

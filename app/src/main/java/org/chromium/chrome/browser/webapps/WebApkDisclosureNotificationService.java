@@ -9,6 +9,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import static org.chromium.chrome.browser.notifications.PendingIntentProvider.buildPendingIntent;
+
 /**
  * Service that handles the action of clicking on the WebApk disclosure notification.
  */
@@ -24,7 +26,8 @@ public class WebApkDisclosureNotificationService extends IntentService {
         Intent intent = new Intent(context, WebApkDisclosureNotificationService.class);
         intent.setAction(ACTION_HIDE_DISCLOSURE);
         intent.putExtra(EXTRA_WEBAPP_ID, webApkPackageName);
-        return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return buildPendingIntent(context,intent,0);
     }
 
     /** Empty public constructor needed by Android. */

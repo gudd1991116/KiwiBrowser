@@ -32,6 +32,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -148,8 +149,10 @@ public final class AndroidInternalScheduler implements Scheduler {
     eventIntent.setClass(context, AlarmReceiver.class);
 
     // Create a pending intent that will cause the AlarmManager to fire the above intent.
+    int flag = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag |= PendingIntent.FLAG_IMMUTABLE;
     PendingIntent sender = PendingIntent.getBroadcast(context, 0, eventIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT);
+        flag);
 
     // Schedule the pending intent after the appropriate delay.
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

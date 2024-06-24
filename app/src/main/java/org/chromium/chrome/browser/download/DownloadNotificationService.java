@@ -55,6 +55,7 @@ import org.chromium.chrome.browser.notifications.ChromeNotificationBuilder;
 import org.chromium.chrome.browser.notifications.NotificationBuilderFactory;
 import org.chromium.chrome.browser.notifications.NotificationConstants;
 import org.chromium.chrome.browser.notifications.NotificationUmaTracker;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 import org.chromium.chrome.browser.notifications.channels.ChannelDefinitions;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.chrome.browser.util.IntentUtils;
@@ -343,9 +344,13 @@ public class DownloadNotificationService extends Service {
         // TODO(dtrainor): Only do this if we have no transient downloads.
         Intent downloadHomeIntent =
                 buildActionIntent(context, ACTION_NOTIFICATION_CLICKED, null, false);
-        builder.setContentIntent(PendingIntent.getBroadcast(context,
-                NotificationConstants.NOTIFICATION_ID_DOWNLOAD_SUMMARY, downloadHomeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT));
+        PendingIntent pendingintent = PendingIntentProvider.buildPendingIntentBroadcast(
+                context,downloadHomeIntent,NotificationConstants.NOTIFICATION_ID_DOWNLOAD_SUMMARY,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        //builder.setContentIntent(PendingIntent.getBroadcast(context,
+        //        NotificationConstants.NOTIFICATION_ID_DOWNLOAD_SUMMARY, downloadHomeIntent,
+        //        PendingIntent.FLAG_UPDATE_CURRENT));
+        builder.setContentIntent(pendingintent);
 
         return builder.build();
     }
@@ -806,8 +811,10 @@ public class DownloadNotificationService extends Service {
             // Clicking on an in-progress download sends the user to see all their downloads.
             Intent downloadHomeIntent =
                     buildActionIntent(mContext, ACTION_NOTIFICATION_CLICKED, null, isOffTheRecord);
-            builder.setContentIntent(PendingIntent.getBroadcast(mContext, notificationId,
-                    downloadHomeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            PendingIntent pendingintent = PendingIntentProvider.buildPendingIntentBroadcast(
+                    mContext,downloadHomeIntent,notificationId,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingintent);
         }
         builder.setAutoCancel(false);
         if (icon != null) builder.setLargeIcon(icon);
@@ -909,8 +916,10 @@ public class DownloadNotificationService extends Service {
             // Clicking on an in-progress download sends the user to see all their downloads.
             Intent downloadHomeIntent =
                     buildActionIntent(mContext, ACTION_NOTIFICATION_CLICKED, null, false);
-            builder.setContentIntent(PendingIntent.getBroadcast(mContext, notificationId,
-                    downloadHomeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            PendingIntent pendingintent = PendingIntentProvider.buildPendingIntentBroadcast(
+                    mContext,downloadHomeIntent,notificationId,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingintent);
         }
         builder.setAutoCancel(false);
         if (icon != null) builder.setLargeIcon(icon);
@@ -979,8 +988,10 @@ public class DownloadNotificationService extends Service {
             }
 
             intent.setComponent(component);
-            builder.setContentIntent(PendingIntent.getBroadcast(
-                    mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+            PendingIntent pendingintent = PendingIntentProvider.buildPendingIntentBroadcast(
+                    mContext,intent,notificationId,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingintent);
         }
         if (icon == null && mDownloadSuccessLargeIcon == null) {
             Bitmap bitmap =
@@ -1027,8 +1038,10 @@ public class DownloadNotificationService extends Service {
      * @param notificationId ID of the notification.
      */
     private PendingIntent buildPendingIntent(Intent intent, int notificationId) {
-        return PendingIntent.getBroadcast(
-                mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //return PendingIntent.getBroadcast(
+        //        mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntentProvider.buildPendingIntentBroadcast(mContext,intent,notificationId,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent buildSummaryIconIntent(int notificationId) {

@@ -37,6 +37,7 @@ import org.chromium.chrome.browser.document.ChromeLauncherActivity;
 import org.chromium.chrome.browser.externalauth.ExternalAuthUtils;
 import org.chromium.chrome.browser.externalnav.ExternalNavigationDelegateImpl;
 import org.chromium.chrome.browser.externalnav.IntentWithGesturesHandler;
+import org.chromium.chrome.browser.notifications.PendingIntentProvider;
 import org.chromium.chrome.browser.offlinepages.OfflinePageUtils;
 import org.chromium.chrome.browser.omnibox.AutocompleteController;
 import org.chromium.chrome.browser.rappor.RapporServiceBridge;
@@ -637,7 +638,8 @@ public class IntentHandler {
         Intent fakeIntent = new Intent();
         Context appContext = ContextUtils.getApplicationContext();
         fakeIntent.setComponent(getFakeComponentName(appContext.getPackageName()));
-        return PendingIntent.getActivity(appContext, 0, fakeIntent, 0);
+        //return PendingIntent.getActivity(appContext, 0, fakeIntent, 0);
+        return  PendingIntentProvider.buildPendingIntentActivity(appContext,fakeIntent,0,0);
     }
 
     /**

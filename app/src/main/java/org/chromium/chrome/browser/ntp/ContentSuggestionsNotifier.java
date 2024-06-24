@@ -161,18 +161,21 @@ public class ContentSuggestionsNotifier {
 
         int nextId = nextNotificationId();
         Uri uri = Uri.parse(url);
-        PendingIntent contentIntent = PendingIntent.getBroadcast(context, 0,
+		int flag = PendingIntent.FLAG_UPDATE_CURRENT;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flag |= PendingIntent.FLAG_IMMUTABLE;
+
+        PendingIntent contentIntent = PendingIntent.getBroadcast(context, 0,/*FLAG_IMMUTABLE*/
                 new Intent(context, OpenUrlReceiver.class)
                         .setData(uri)
                         .putExtra(NOTIFICATION_CATEGORY_EXTRA, category)
                         .putExtra(NOTIFICATION_ID_WITHIN_CATEGORY_EXTRA, idWithinCategory),
-                0);
-        PendingIntent deleteIntent = PendingIntent.getBroadcast(context, 0,
+                flag);
+        PendingIntent deleteIntent = PendingIntent.getBroadcast(context, 0,/*FLAG_IMMUTABLE*/
                 new Intent(context, DeleteReceiver.class)
                         .setData(uri)
                         .putExtra(NOTIFICATION_CATEGORY_EXTRA, category)
                         .putExtra(NOTIFICATION_ID_WITHIN_CATEGORY_EXTRA, idWithinCategory),
-                0);
+                flag);
         ChromeNotificationBuilder builder =
                 NotificationBuilderFactory
                         .createChromeNotificationBuilder(true /* preferCompat */,
@@ -186,7 +189,7 @@ public class ContentSuggestionsNotifier {
                         .setLargeIcon(image)
                         .setSmallIcon(R.drawable.ic_chrome);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            PendingIntent settingsIntent = PendingIntent.getActivity(context, 0,
+            PendingIntent settingsIntent = PendingIntent.getActivity(context, 0,/*FLAG_IMMUTABLE  no need*/
                     PreferencesLauncher.createIntentForSettingsPage(
                             context, NotificationsPreferences.class.getName()),
                     0);
@@ -213,8 +216,8 @@ public class ContentSuggestionsNotifier {
                             .putExtra(NOTIFICATION_CATEGORY_EXTRA, category)
                             .putExtra(NOTIFICATION_ID_WITHIN_CATEGORY_EXTRA, idWithinCategory);
             alarmManager.set(AlarmManager.RTC, timeoutAtMillis,
-                    PendingIntent.getBroadcast(
-                            context, 0, timeoutIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    PendingIntent.getBroadcast(/*FLAG_IMMUTABLE*/
+                            context, 0, timeoutIntent, flag));
         }
         return true;
     }

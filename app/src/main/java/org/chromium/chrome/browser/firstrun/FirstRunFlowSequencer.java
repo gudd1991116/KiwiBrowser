@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -299,11 +300,12 @@ public abstract class FirstRunFlowSequencer  {
             Context caller, Intent firstRunIntent, Intent fromIntent, boolean requiresBroadcast) {
         PendingIntent pendingIntent = null;
         int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) pendingIntentFlags |= PendingIntent.FLAG_IMMUTABLE;
         if (requiresBroadcast) {
-            pendingIntent = PendingIntent.getBroadcast(
+            pendingIntent = PendingIntent.getBroadcast(/*FLAG_IMMUTABLE*/
                     caller, FIRST_RUN_EXPERIENCE_REQUEST_CODE, fromIntent, pendingIntentFlags);
         } else {
-            pendingIntent = PendingIntent.getActivity(
+            pendingIntent = PendingIntent.getActivity(/*FLAG_IMMUTABLE*/
                     caller, FIRST_RUN_EXPERIENCE_REQUEST_CODE, fromIntent, pendingIntentFlags);
         }
         firstRunIntent.putExtra(FirstRunActivity.EXTRA_CHROME_LAUNCH_INTENT, pendingIntent);

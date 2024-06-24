@@ -14,6 +14,8 @@ import org.chromium.chrome.browser.UrlConstants;
 import org.chromium.chrome.browser.ntp.NewTabPage;
 import org.chromium.chrome.browser.util.FeatureUtilities;
 
+import static org.chromium.chrome.browser.UrlConstants.LOCAL_NTP_META;
+
 /**
  * Provides information regarding homepage enabled states and URI.
  *
@@ -121,9 +123,11 @@ public class HomepageManager {
      *         if the homepage button is force enabled via flag.
      */
     public static String getDefaultHomepageUri() {
+        HomepageManager manager = getInstance();
         return PartnerBrowserCustomizations.isHomepageProviderAvailableAndEnabled()
                 ? PartnerBrowserCustomizations.getHomePageUrl()
-                : UrlConstants.NTP_URL;
+                : manager.getPrefHomepageCustomUri();
+                //: UrlConstants.NTP_URL;   //LOCAL_NTP_URL
     }
 
     /**
@@ -152,7 +156,7 @@ public class HomepageManager {
      * @return User specified homepage custom URI string.
      */
     public String getPrefHomepageCustomUri() {
-        return mSharedPreferences.getString(PREF_HOMEPAGE_CUSTOM_URI, "");
+        return mSharedPreferences.getString(PREF_HOMEPAGE_CUSTOM_URI, LOCAL_NTP_META); //LOCAL_NTP_URL  LOCAL_NTP
     }
 
     /**

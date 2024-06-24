@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2017 The Chromium Authors. All rights reserve
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -18,9 +18,9 @@ import static org.chromium.chrome.browser.download.DownloadNotificationService2.
 import static org.chromium.chrome.browser.download.DownloadNotificationService2.EXTRA_IS_OFF_THE_RECORD;
 import static org.chromium.chrome.browser.download.DownloadNotificationService2.EXTRA_IS_SUPPORTED_MIME_TYPE;
 import static org.chromium.chrome.browser.download.DownloadNotificationService2.EXTRA_NOTIFICATION_BUNDLE_ICON_ID;
+import static org.chromium.chrome.browser.notifications.PendingIntentProvider.buildPendingIntent;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -227,8 +227,7 @@ public final class DownloadNotificationFactory {
                             context.getPackageName(), DownloadBroadcastManager.class.getName());
                     intent.setComponent(component);
                     builder.setContentIntent(
-                            PendingIntent.getService(context, downloadUpdate.getNotificationId(),
-                                    intent, PendingIntent.FLAG_UPDATE_CURRENT));
+                            buildPendingIntent(context,intent,downloadUpdate.getNotificationId()));
                 }
                 break;
 
@@ -259,22 +258,10 @@ public final class DownloadNotificationFactory {
             Intent downloadHomeIntent = buildActionIntent(
                     context, ACTION_NOTIFICATION_CLICKED, null, downloadUpdate.getIsOffTheRecord());
             builder.setContentIntent(
-                    PendingIntent.getService(context, downloadUpdate.getNotificationId(),
-                            downloadHomeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                     buildPendingIntent(context,downloadHomeIntent,downloadUpdate.getNotificationId()));
         }
 
         return builder.build();
-    }
-
-    /**
-     * Helper method to build a PendingIntent from the provided intent.
-     * @param intent Intent to broadcast.
-     * @param notificationId ID of the notification.
-     */
-    private static PendingIntent buildPendingIntent(
-            Context context, Intent intent, int notificationId) {
-        return PendingIntent.getService(
-                context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**

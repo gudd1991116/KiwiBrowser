@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.net.Uri;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.VisibleForTesting;
+
+import android.os.Build;
 import android.support.customtabs.R;
 import androidx.core.widget.TextViewCompat;
 import android.text.TextUtils;
@@ -98,14 +100,22 @@ class BrowserActionsFallbackMenuUi implements AdapterView.OnItemClickListener {
 
     private PendingIntent buildOpenInBrowserAction() {
         Intent intent = new Intent(Intent.ACTION_VIEW, mUri);
-        return PendingIntent.getActivity(mContext, 0, intent, 0);
+		int flag = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)flag |= PendingIntent.FLAG_IMMUTABLE;
+        
+		return PendingIntent.getActivity(mContext, 0, intent, flag);/*FLAG*/
+
     }
 
     private PendingIntent buildShareAction() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, mUri.toString());
         intent.setType("text/plain");
-        return PendingIntent.getActivity(mContext, 0, intent, 0);
+ 		int flag = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)flag |= PendingIntent.FLAG_IMMUTABLE;
+ 
+        return PendingIntent.getActivity(mContext, 0, intent, flag);/*FLAG*/
+        
     }
 
     private Runnable buildCopyAction() {

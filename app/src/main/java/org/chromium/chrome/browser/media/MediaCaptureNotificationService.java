@@ -31,6 +31,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import static org.chromium.chrome.browser.notifications.PendingIntentProvider.buildPendingIntent;
+import static org.chromium.chrome.browser.notifications.PendingIntentProvider.buildPendingIntentActivity;
+
 /**
  * Service that creates/destroys the WebRTC notification when media capture starts/stops.
  */
@@ -181,8 +184,10 @@ public class MediaCaptureNotificationService extends Service {
                 new StringBuilder(getNotificationContentText(mediaType, url)).append('.');
         Intent tabIntent = Tab.createBringTabToFrontIntent(notificationId);
         if (tabIntent != null) {
-            PendingIntent contentIntent = PendingIntent.getActivity(
-                    mContext, notificationId, tabIntent, 0);
+            //PendingIntent contentIntent = PendingIntent.getActivity(
+            //        mContext, notificationId, tabIntent, 0);
+            PendingIntent contentIntent = buildPendingIntentActivity(
+                      mContext,tabIntent,notificationId,0);
             builder.setContentIntent(contentIntent);
             if (mediaType == MEDIATYPE_SCREEN_CAPTURE) {
                 // Add a "Stop" button to the screen capture notification and turn the notification
@@ -367,7 +372,8 @@ public class MediaCaptureNotificationService extends Service {
         Intent intent = new Intent(this, MediaCaptureNotificationService.class);
         intent.setAction(ACTION_SCREEN_CAPTURE_STOP);
         intent.putExtra(NOTIFICATION_ID_EXTRA, notificationId);
-        return PendingIntent.getService(
-                mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //return PendingIntent.getService(
+        //        mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return buildPendingIntent(mContext,intent,notificationId);
     }
 }
