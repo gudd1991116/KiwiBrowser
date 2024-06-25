@@ -29,10 +29,11 @@ import android.widget.ListView;
 public class HomepagePreferences extends PreferenceFragment {
     private static final String PREF_HOMEPAGE_SWITCH = "homepage_switch";
     private static final String PREF_HOMEPAGE_EDIT = "homepage_edit";
-
+    private static final String PREF_HOMEPAGE_SELECT = "homepage_select";
     private HomepageManager mHomepageManager;
     private ChromeSwitchPreference mHomepageSwitch;
     private Preference mHomepageEdit;
+    private Preference mHomepageSelect;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -58,6 +59,8 @@ public class HomepagePreferences extends PreferenceFragment {
         });
 
         mHomepageEdit = findPreference(PREF_HOMEPAGE_EDIT);
+        mHomepageSelect = findPreference(PREF_HOMEPAGE_SELECT);
+
         updateCurrentHomepageUrl();
 
     }

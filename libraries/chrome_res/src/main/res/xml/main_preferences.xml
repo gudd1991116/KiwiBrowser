@@ -41,7 +41,7 @@
         android:order="6"
         android:title="@string/prefs_contextual_suggestions"/>
     <org.chromium.chrome.browser.preferences.ChromePreference
-        android:fragment="org.chromium.chrome.browser.preferences.HomepagePreferences"
+        android:fragment="org.chromium.chrome.browser.preferences.HomepageSelectPreferences"
         android:key="homepage"
         android:order="7"
         android:title="@string/options_homepage_title"/>

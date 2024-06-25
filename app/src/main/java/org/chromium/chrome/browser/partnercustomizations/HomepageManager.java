@@ -10,11 +10,10 @@ import android.text.TextUtils;
 import org.chromium.base.ContextUtils;
 import org.chromium.base.ObserverList;
 import org.chromium.base.metrics.RecordHistogram;
-import org.chromium.chrome.browser.UrlConstants;
-import org.chromium.chrome.browser.ntp.NewTabPage;
 import org.chromium.chrome.browser.util.FeatureUtilities;
 
-import static org.chromium.chrome.browser.UrlConstants.LOCAL_NTP_META;
+import  org.chromium.chrome.browser.UrlConstants;
+
 
 /**
  * Provides information regarding homepage enabled states and URI.
@@ -37,6 +36,7 @@ public class HomepageManager {
     private static final String PREF_HOMEPAGE_CUSTOM_URI = "homepage_custom_uri";
     private static final String PREF_HOMEPAGE_USE_DEFAULT_URI = "homepage_partner_enabled";
 
+    public static final String PREF_HOMEPAGE_SELECTION = "active_homepage_selection";
     private static HomepageManager sInstance;
 
     private final SharedPreferences mSharedPreferences;
@@ -156,9 +156,19 @@ public class HomepageManager {
      * @return User specified homepage custom URI string.
      */
     public String getPrefHomepageCustomUri() {
-        return mSharedPreferences.getString(PREF_HOMEPAGE_CUSTOM_URI, LOCAL_NTP_META); //LOCAL_NTP_URL  LOCAL_NTP
+        //return mSharedPreferences.getString(PREF_HOMEPAGE_CUSTOM_URI, LOCAL_NTP_META3); //LOCAL_NTP_URL  LOCAL_NTP
+        return getPrfHomepageMeatUri();
     }
 
+    public String getPrfHomepageMeatUri() {
+        // 1.CHANNEL RULES 2.Debug/Release RULES
+        String metaHomepage = UrlConstants.LOCAL_NTP_META3;
+        String selectedHomepage = mSharedPreferences.getString(PREF_HOMEPAGE_SELECTION,"WEB3").toUpperCase();
+        if("WEB2".contentEquals(selectedHomepage)){
+            metaHomepage = UrlConstants.LOCAL_NTP_META2;
+        }
+        return metaHomepage;
+    }
     /**
      * Sets custom homepage URI
      */
