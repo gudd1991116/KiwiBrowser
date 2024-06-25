@@ -830,6 +830,7 @@ To obtain new licenses, connect to the internet and play your downloaded content
 <string name="menu_stop_refresh">"Stop refreshing"</string>
 <string name="menu_new_tab">"New tab"</string>
 <string name="menu_new_incognito_tab">"New incognito tab"</string>
+<string name="menu_open_wallet_app">"Open Wallet"</string>
 <string name="menu_bookmarks">"Bookmarks"</string>
 <string name="menu_recent_tabs">"Recent tabs"</string>
 <string name="menu_history">"History"</string>
