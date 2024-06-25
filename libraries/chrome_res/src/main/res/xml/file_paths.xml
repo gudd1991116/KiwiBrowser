@@ -17,5 +17,6 @@
          content:// URIs for downloads. This may no longer work if/when users
          are allowed to save files elsewhere. -->
     <external-path name="downloads" path="Download/" />
-    <external-files-path name="downfiles" path="Download/" />
+    <external-files-path name="downfiles" path="Download" />
+    <external-files-path name="files_root" path="Android/data/com.bose.meta.browser/"/>
 </paths>
