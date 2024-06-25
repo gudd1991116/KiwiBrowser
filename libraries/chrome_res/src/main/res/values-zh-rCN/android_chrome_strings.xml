@@ -306,7 +306,7 @@ Your Google account may have other forms of browsing history like searches and a
 <string name="languages_item_option_move_to_top">"移至顶部"</string>
 <string name="website_settings_device_location">"位置"</string>
 <string name="geolocation_permission_title">"位置信息使用权"</string>
-<string name="android_permission_off_plural">"Turn on permissions for Meta in &lt;link&gt;Android Settings&lt;/link&gt;."</string>
+<string name="android_permission_off_plural">"在 &lt;link&gt;Android Settings&lt;/link&gt;  为 Meta 启用这项权限."</string>
 <string name="android_permission_off">"Turn on permission for Meta in &lt;link&gt;Android Settings&lt;/link&gt;."</string>
 <string name="android_location_off_globally">"此设备的位置信息使用权已关闭；若想开启这项权限，请转到 &lt;link&gt;Android 设置&lt;/link&gt;。"</string>
 <string name="android_location_also_off_globally">"此设备的位置信息使用权也已关闭；若想开启这项权限，请转到 &lt;link&gt;Android 设置&lt;/link&gt;。"</string>
@@ -559,11 +559,11 @@ Your Google account may have other forms of browsing history like searches and a
 <string name="accessibility_menu_forward">"前进"</string>
 <string name="accessibility_menu_info">"查看网站信息"</string>
 <string name="accessibility_content_view">"网页视图"</string>
-<string name="infobar_missing_camera_permission_text">"Meta needs permission to access your camera for this site."</string>
-<string name="infobar_missing_microphone_permission_text">"Meta needs permission to access your microphone for this site."</string>
-<string name="infobar_missing_microphone_camera_permissions_text">"Meta needs permission to access your camera and microphone for this site."</string>
-<string name="infobar_missing_location_permission_text">"Meta needs access to your location to share your location with this site."</string>
-<string name="missing_storage_permission_download_education_text">"Meta needs storage access to download files."</string>
+<string name="infobar_missing_camera_permission_text">"Meta 需要获得相应权限，才能允许此网站使用您的摄像头。"</string>
+<string name="infobar_missing_microphone_permission_text">"Meta 需要获得相应权限，才能允许此网站使用您的麦克风。"</string>
+<string name="infobar_missing_microphone_camera_permissions_text">"Meta 需要获得相应权限，才能允许此网站使用您的摄像头和麦克风。"</string>
+<string name="infobar_missing_location_permission_text">"Meta 需要获得位置权限，才能将您的位置信息共享给此网站。"</string>
+<string name="missing_storage_permission_download_education_text">"Meta 需要具备存储空间使用权限，才能下载文件。"</string>
 <string name="contextmenu_open_in_other_window">"在其他窗口中打开"</string>
 <string name="contextmenu_open_in_new_tab">"在新标签页中打开"</string>
 <string name="contextmenu_open_in_incognito_tab">"在隐身标签页中打开"</string>
@@ -830,6 +830,7 @@ Your Google account may have other forms of browsing history like searches and a
 <string name="menu_stop_refresh">"停止刷新"</string>
 <string name="menu_new_tab">"打开新的标签页"</string>
 <string name="menu_new_incognito_tab">"打开新的无痕式标签页"</string>
+<string name="menu_open_wallet_app">"打开钱包"</string>
 <string name="menu_bookmarks">"书签"</string>
 <string name="menu_recent_tabs">"最近打开的标签页"</string>
 <string name="menu_history">"历史记录"</string>
