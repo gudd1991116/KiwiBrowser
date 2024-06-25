@@ -36,6 +36,9 @@
             android:title="@string/menu_new_tab" />
         <item android:id="@+id/new_incognito_tab_menu_id"
             android:title="@string/menu_new_incognito_tab" />
+        <item android:id="@+id/bose_wallet_kit_id"
+            android:title="@string/menu_open_wallet_app"
+            android:visible="true"/>
         <item android:id="@+id/all_bookmarks_menu_id"
             android:title="@null" />
         <item android:id="@+id/recent_tabs_menu_id"
