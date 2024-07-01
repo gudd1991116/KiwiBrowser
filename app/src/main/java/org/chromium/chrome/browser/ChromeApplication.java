@@ -80,7 +80,7 @@ public class ChromeApplication extends Application {
                 boolean wAppInitied = io.horizontalsystems.bankwallet.core.App.instance != null;
                 Log.v(TAG,"onCreate wallet App at process:" + proName);
                 androidx.work.WorkManager.initialize(this, Objects.requireNonNull(wApp).getWorkManagerConfiguration());
-                Log.v(TAG,"onCreate wallet wApp initiaked :" + wAppInitied);
+                Log.v(TAG,"onCreate wallet wApp initial:" + wAppInitied);
                 Objects.requireNonNull(wApp).onCreate();//在调用onCreate
             }catch (Throwable e){
                 Log.e("ChromeApplication","onCreate with exception:" + e.toString());
@@ -96,12 +96,14 @@ public class ChromeApplication extends Application {
         String processName = ContextUtils.getProcessName();
         if (browserProcess) {
             UmaUtils.recordMainEntryPointTime();
+            super.attachBaseContext(setLocal(context));
+        }else{
+            super.attachBaseContext(context);
         }
-        super.attachBaseContext(setLocal(context));
         checkAppBeingReplaced();
         ContextUtils.initApplicationContext(this);
         inistanceID++;
-        Log.v(TAG,"ID" + inistanceID + " App run in process: " + processName);
+        Log.v(TAG,"ID:" + inistanceID + " App run in process: " + processName);
         if (browserProcess) {
             if (BuildConfig.IS_MULTIDEX_ENABLED) {
                 ChromiumMultiDexInstaller.install(this);
@@ -288,6 +290,7 @@ public class ChromeApplication extends Application {
             Locale.setDefault(needLocal);
         }
         if(needLocal != null){
+            Log.d(TAG,"Need Set Location:%s,ver:%s",needLocal.toString(),versionName);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 configuration.setLocale(needLocal);
                 return context.createConfigurationContext(configuration);
