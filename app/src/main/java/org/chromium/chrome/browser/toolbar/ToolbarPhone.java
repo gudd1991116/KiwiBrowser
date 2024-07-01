@@ -96,6 +96,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.horizontalsystems.bankwallet.modules.launcher.LaunchModule;
+
 /**
  * Phone specific toolbar implementation.
  */
@@ -146,6 +148,7 @@ public class ToolbarPhone extends ToolbarLayout
     protected ImageView mToggleTabStackButton;
     protected NewTabButton mNewTabButton;
     protected @Nullable TintedImageButton mHomeButton;
+    protected @Nullable TintedImageButton mWalletButton;
     protected @Nullable TintedImageButton mOverscrollButton;
     private TextView mUrlBar;
     protected View mUrlActionContainer;
@@ -382,6 +385,8 @@ public class ToolbarPhone extends ToolbarLayout
         mHomeButton = (TintedImageButton) findViewById(R.id.home_button);
         if (FeatureUtilities.isNewTabPageButtonEnabled()) changeIconToNTPIcon(mHomeButton);
 
+        mWalletButton = (TintedImageButton) findViewById(R.id.wallet_button);
+
         mOverscrollButton = (TintedImageButton) findViewById(R.id.overscroll_button);
 
         mUrlBar = (TextView) findViewById(R.id.url_bar);
@@ -545,6 +550,8 @@ public class ToolbarPhone extends ToolbarLayout
 
         if (mHomeButton != null) mHomeButton.setOnClickListener(this);
 
+        if (mWalletButton != null) mWalletButton.setOnClickListener(this);
+
         if (mOverscrollButton != null) mOverscrollButton.setOnClickListener(this);
 
         mMenuButton.setOnKeyListener(new KeyboardNavigationListener() {
@@ -616,6 +623,9 @@ public class ToolbarPhone extends ToolbarLayout
             }
         } else if (mOverscrollButton != null && mOverscrollButton == v) {
             openOverscroll();
+        } else if (mWalletButton != null && mWalletButton == v){
+            //open meta wallet !!
+            LaunchModule.INSTANCE.start(getContext());
         }
     }
 
@@ -1131,7 +1141,9 @@ public class ToolbarPhone extends ToolbarLayout
         if (mOverscrollButton != null && mOverscrollButton.getVisibility() != GONE) {
             mOverscrollButton.setVisibility(toolbarButtonVisibility);
         }
-
+        if (mWalletButton != null && mWalletButton.getVisibility() != GONE) {
+            mWalletButton.setVisibility(toolbarButtonVisibility);
+        }
         updateLocationBarLayoutForExpansionAnimation();
     }
 
@@ -1266,6 +1278,12 @@ public class ToolbarPhone extends ToolbarLayout
             mHomeButton.setAlpha(previousAlpha * floatAlpha);
             drawChild(canvas, mHomeButton, SystemClock.uptimeMillis());
             mHomeButton.setAlpha(previousAlpha);
+        }
+        if (mWalletButton != null && mWalletButton.getVisibility() != View.GONE) {
+            previousAlpha = mWalletButton.getAlpha();
+            mWalletButton.setAlpha(previousAlpha * floatAlpha);
+            drawChild(canvas, mWalletButton, SystemClock.uptimeMillis());
+            mWalletButton.setAlpha(previousAlpha);
         }
 
         // Draw the location/URL bar.
@@ -2272,7 +2290,7 @@ public class ToolbarPhone extends ToolbarLayout
     protected void updateTabCountVisuals(int numberOfTabs) {
         if (mHomeButton != null) mHomeButton.setEnabled(true);
         if (mOverscrollButton != null) mOverscrollButton.setEnabled(true);
-
+        if (mWalletButton != null) mWalletButton.setEnabled(true);
         if (mToggleTabStackButton == null) return;
 
         mToggleTabStackButton.setEnabled(numberOfTabs >= 1);
@@ -2588,6 +2606,7 @@ public class ToolbarPhone extends ToolbarLayout
         }
 
         mMenuButton.setTint(mUseLightToolbarDrawables ? mLightModeTint : mDarkModeTint);
+        mWalletButton.setTint(mUseLightToolbarDrawables ? mLightModeTint : mDarkModeTint);
         if (mLocationBar.useModernDesign()) {
             updateModernLocationBarColor(getLocationBarColorForToolbarColor(currentPrimaryColor));
         }

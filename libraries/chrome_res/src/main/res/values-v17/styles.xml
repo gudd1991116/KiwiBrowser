@@ -565,8 +565,9 @@
     <style name="ToolbarButton">
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:layout_width">@dimen/toolbar_button_width</item>
-        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_height">@dimen/toolbar_button_height</item>
         <item name="android:scaleType">center</item>
+        <item name="android:padding">2dp</item>
     </style>
     <style name="ToolbarMenuButtonPhone" parent="ToolbarButton">
         <item name="android:layout_gravity">top</item>

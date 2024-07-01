@@ -24,22 +24,23 @@
         style="@style/ToolbarButton"
         android:src="@drawable/btn_toolbar_home"
         android:contentDescription="@string/accessibility_toolbar_btn_home"
+        android:layout_gravity="center_horizontal|start"
         android:visibility="gone" />
 
     <org.chromium.chrome.browser.omnibox.LocationBarPhone
         android:id="@+id/location_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="top" />
+        android:layout_height="@dimen/toolbar_button_height"
+        android:layout_gravity="center|top" />
 
     <LinearLayout android:id="@+id/toolbar_buttons"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|end" >
+        android:layout_gravity="center_horizontal|end" >
 
         <Space
-            android:layout_width="4dp"
+            android:layout_width="2dp"
             android:layout_height="match_parent" />
 
         <ViewStub
@@ -62,6 +63,12 @@
             android:layout_gravity="top"
             android:contentDescription="@string/accessibility_toolbar_btn_tabswitcher_toggle_default" />
 
+        <org.chromium.chrome.browser.widget.TintedImageButton
+            android:id="@+id/wallet_button"
+            style="@style/ToolbarButton"
+            android:src="@drawable/btn_toolbar_wallet"
+            android:visibility="visible" />
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,5 +89,4 @@
                 android:visibility="invisible" />
         </FrameLayout>
     </LinearLayout>
-
 </merge>

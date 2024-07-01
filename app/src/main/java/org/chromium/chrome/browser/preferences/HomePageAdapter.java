@@ -51,6 +51,8 @@ public class HomePageAdapter extends BaseAdapter implements View.OnClickListener
         mHomePageDescriptions.add("Use Meta Web3 HomePage");
         mHomePageSelector.add("Web2");
         mHomePageDescriptions.add("Use Meta Web2 HomePage");
+        mHomePageSelector.add("Ntp");
+        mHomePageDescriptions.add("Use Chrome Default HomePage");
         mSelectedHomePagePosition = 0;
         String activeTheme = ContextUtils.getAppSharedPreferences().getString(PREF_HOMEPAGE_SELECTION, "WEB3");
         for (int i = 0; i < mHomePageSelector.size(); ++i) {

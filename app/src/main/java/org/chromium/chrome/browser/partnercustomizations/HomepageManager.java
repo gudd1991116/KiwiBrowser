@@ -137,7 +137,7 @@ public class HomepageManager {
      * @see #isHomepageEnabled
      */
     public boolean getPrefHomepageEnabled() {
-        return mSharedPreferences.getBoolean(PREF_HOMEPAGE_ENABLED, true);
+        return mSharedPreferences.getBoolean(PREF_HOMEPAGE_ENABLED, true); // <- change to false
     }
 
     /**
@@ -166,6 +166,8 @@ public class HomepageManager {
         String selectedHomepage = mSharedPreferences.getString(PREF_HOMEPAGE_SELECTION,"WEB3").toUpperCase();
         if("WEB2".contentEquals(selectedHomepage)){
             metaHomepage = UrlConstants.LOCAL_NTP_META2;
+        }else if("NTP".contentEquals(selectedHomepage)){
+            metaHomepage = UrlConstants.NTP_NON_NATIVE_URL;
         }
         return metaHomepage;
     }
