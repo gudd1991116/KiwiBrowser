@@ -144,7 +144,7 @@ public class ProcessInitializationHandler {
      */
     protected void handlePreNativeInitialization() {
         Context application = ContextUtils.getApplicationContext();
-
+        Log.d(TAG,"Handle PreNativeInitialization");
         UiUtils.setKeyboardShowingDelegate(new UiUtils.KeyboardShowingDelegate() {
             @Override
             public boolean disableKeyboardCheck(Context context, View view) {
@@ -192,6 +192,7 @@ public class ProcessInitializationHandler {
      */
     public final void initializePostNative() {
         ThreadUtils.checkUiThread();
+        Log.d(TAG,"initializePostNative with mInitializedPostNative:%s",mInitializedPostNative);
         if (mInitializedPostNative) return;
         handlePostNativeInitialization();
         mInitializedPostNative = true;
@@ -203,7 +204,7 @@ public class ProcessInitializationHandler {
     protected void handlePostNativeInitialization() {
         final ChromeApplication application =
                 (ChromeApplication) ContextUtils.getApplicationContext();
-
+        Log.d(TAG,"Handle PostNativeInitialization");
         DataReductionProxySettings.handlePostNativeInitialization();
         ChromeActivitySessionTracker.getInstance().initializeWithNative();
         ProfileManagerUtils.removeSessionCookiesForAllProfiles();
@@ -259,13 +260,14 @@ public class ProcessInitializationHandler {
         final ChromeApplication application =
                 (ChromeApplication) ContextUtils.getApplicationContext();
         DeferredStartupHandler deferredStartupHandler = DeferredStartupHandler.getInstance();
+        Log.d(TAG,"Handle Defered StartupTask Ini");
 
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
                 // Punt all tasks that may block on disk off onto a background thread.
                 initAsyncDiskTask(application);
-
+                Log.d(TAG," DefaultBrowserInfo.initBrowserFetcher  ...");
                 DefaultBrowserInfo.initBrowserFetcher();
 
                 AfterStartupTaskUtils.setStartupComplete();
@@ -285,7 +287,7 @@ public class ProcessInitializationHandler {
                 ShareHelper.clearSharedImages();
 
                 SelectFileDialog.clearCapturedCameraFiles();
-
+                Log.d(TAG,"ChannelsUpdater check Update Channels @Deferred task");
                 if (ChannelsUpdater.getInstance().shouldUpdateChannels()) {
                     initChannelsAsync();
                 }
@@ -295,6 +297,7 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG,"MediaCaptureNotificationService.clearMediaNotifications");
                 // Clear any media notifications that existed when Chrome was last killed.
                 MediaCaptureNotificationService.clearMediaNotifications(application);
 
@@ -307,6 +310,7 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG,"LocaleManager.getInstance().recordStartupMetrics()");
                 LocaleManager.getInstance().recordStartupMetrics();
             }
         });
@@ -314,6 +318,7 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG,"HomepageManager.shouldShowHomepageSetting ");
                 if (HomepageManager.shouldShowHomepageSetting()) {
                     RecordHistogram.recordBooleanHistogram("Settings.ShowHomeButtonPreferenceState",
                             HomepageManager.isHomepageEnabled());
@@ -324,8 +329,9 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG," AppHooks.get().createGsaHelper().startSync()   disable it for android14 ???? test !!! ");
                 // Starts syncing with GSA.
-                AppHooks.get().createGsaHelper().startSync();
+                //AppHooks.get().createGsaHelper().startSync();
             }
         });
 
@@ -340,6 +346,7 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG," ForcedSigninProcessor.start  .. AccountManagerFacade .. ");
                 ForcedSigninProcessor.start(application, null);
                 AccountManagerFacade.get().addObserver(
                         new AccountsChangeObserver() {
@@ -359,6 +366,7 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG," GoogleServicesManager.onMainActivityStart");
                 GoogleServicesManager.get(application).onMainActivityStart();
                 RevenueStats.getInstance();
             }
@@ -367,9 +375,10 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG,"DevToolsServer  operation . disable  for test @android 14");
                 mDevToolsServer = new DevToolsServer(DEV_TOOLS_SERVER_SOCKET_PREFIX);
-                mDevToolsServer.setRemoteDebuggingEnabled(
-                        true, DevToolsServer.Security.ALLOW_DEBUG_PERMISSION);
+                //mDevToolsServer.setRemoteDebuggingEnabled(
+                //        true, DevToolsServer.Security.ALLOW_DEBUG_PERMISSION);
             }
         });
 
@@ -395,6 +404,7 @@ public class ProcessInitializationHandler {
         deferredStartupHandler.addDeferredTask(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG," BackgroundTaskSchedulerFactory.getScheduler().checkForOSUpgrade");
                 BackgroundTaskSchedulerFactory.getScheduler().checkForOSUpgrade(application);
             }
         });
@@ -414,11 +424,12 @@ public class ProcessInitializationHandler {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
+                Log.d(TAG,"ChannelsUpdater.getInstance().updateChannels()");
                 ChannelsUpdater.getInstance().updateChannels();
                 return null;
             }
         }
-                .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
     private void initAsyncDiskTask(final Context context) {
