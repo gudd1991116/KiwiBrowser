@@ -42,6 +42,7 @@ public class UrlConstants {
 
     public static final String LOCAL_NTP_URL = "chrome-search://local-ntp/local-ntp.html";
     public static final String LOCAL_NTP_META3= "https://boseweb3.com/close/bsh5/";
+    //public static final String LOCAL_NTP_META3= "chrome-extension://aijbcieokginbpnieiopnbbdjphjmfdi/index.html";
     public static final String LOCAL_NTP_META2= "https://boseweb3.com/close/web2/#/";
     public static final String BOOKMARKS_HOST = "bookmarks";
     public static final String BOOKMARKS_URL = "chrome-native://bookmarks/";
