@@ -69,6 +69,9 @@ public class UrlBarData {
         //  displayText = displayText.replace("chrome-extension://", "kiwi-extension://");
         //  url = url.replace("chrome-extension://", "kiwi-extension://");
         //}
+        if(url.endsWith("index.html#/")){
+            url = url.replace("index.html#/","index.html");
+        }
         String scheme = Uri.parse(displayText).getScheme();
 
         // Because Android versions 4.2 and before lack proper RTL support,
