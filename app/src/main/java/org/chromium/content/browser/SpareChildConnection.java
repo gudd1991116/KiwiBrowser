@@ -45,6 +45,7 @@ public class SpareChildConnection {
                     @Override
                     public void onChildStarted() {
                         assert LauncherThread.runningOnLauncherThread();
+                        Log.e(TAG, "child sandbox service started");
                         mConnectionReady = true;
                         if (mConnectionServiceCallback != null) {
                             mConnectionServiceCallback.onChildStarted();
@@ -66,6 +67,7 @@ public class SpareChildConnection {
 
                     @Override
                     public void onChildProcessDied(ChildProcessConnection connection) {
+                        Log.e(TAG, "sandbox service process died !!");
                         if (mConnectionServiceCallback != null) {
                             mConnectionServiceCallback.onChildProcessDied(connection);
                         }

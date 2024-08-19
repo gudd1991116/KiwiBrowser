@@ -130,6 +130,7 @@ public abstract class ChildProcessService extends Service {
         @Override
         public void forceKill() {
             assert mServiceBound;
+            Log.e(TAG,"child process forceKilled ...");
             Process.killProcess(Process.myPid());
         }
 
@@ -152,6 +153,7 @@ public abstract class ChildProcessService extends Service {
             // So we're ignoring pressure from the host process if it's better than the last
             // reported pressure. I.e. the host process can drive pressure up, but it'll go
             // down only when we the service get a signal through ComponentCallbacks2.
+            Log.w(TAG,"Memory Pressure : %d",pressure);
             ThreadUtils.postOnUiThread(() -> {
                 if (pressure >= MemoryPressureMonitor.INSTANCE.getLastReportedPressure()) {
                     MemoryPressureMonitor.INSTANCE.notifyPressure(pressure);
@@ -202,6 +204,7 @@ public abstract class ChildProcessService extends Service {
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to load native library.", e);
                     }
+                    Log.w(TAG,"loadNativeLibrary in Main Thread return: %s",nativeLibraryLoaded);
                     if (!nativeLibraryLoaded) {
                         System.exit(-1);
                     }
@@ -240,6 +243,7 @@ public abstract class ChildProcessService extends Service {
 
                     mDelegate.onBeforeMain();
                     if (mActivitySemaphore.tryAcquire()) {
+                        Log.v(TAG,"main thread runMain() -->  call ContentMain::nativeMain -> JNI_ContentMain_Start(..) !");
                         mDelegate.runMain();
                         nativeExitChildProcess();
                     }

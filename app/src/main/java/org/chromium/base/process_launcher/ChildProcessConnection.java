@@ -116,6 +116,7 @@ public class ChildProcessConnection {
                 try {
                     TraceEvent.begin("ChildProcessConnection.ChildServiceConnectionImpl.bind");
                     mBound = mContext.bindService(mBindIntent, this, mBindFlags);
+                    Log.v(TAG,"ChildProcessConnectionImpl do bind return: %s",mBound);
                 } finally {
                     TraceEvent.end("ChildProcessConnection.ChildServiceConnectionImpl.bind");
                 }
@@ -249,6 +250,7 @@ public class ChildProcessConnection {
                 @Override
                 public ChildServiceConnection createConnection(
                         Intent bindIntent, int bindFlags, ChildServiceConnectionDelegate delegate) {
+                    Log.d(TAG,"ChildServiceConnectionFactory new ChildServiceConnectionImpl");
                     return new ChildServiceConnectionImpl(context, bindIntent, bindFlags, delegate);
                 }
             };
@@ -281,7 +283,8 @@ public class ChildProcessConnection {
         if (serviceBundle != null) {
             intent.putExtras(serviceBundle);
         }
-
+        intent.setPackage(context.getPackageName());
+        Log.d(TAG,"Create bind intent ,service name: %s @%s",serviceName,intent.getPackage());
         int defaultFlags = Context.BIND_AUTO_CREATE
                 | (bindAsExternalService ? Context.BIND_EXTERNAL_SERVICE : 0);
 
@@ -327,6 +330,7 @@ public class ChildProcessConnection {
     public void start(boolean useStrongBinding, ServiceCallback serviceCallback) {
         try {
             TraceEvent.begin("ChildProcessConnection.start");
+            Log.w(TAG,"ChildProcessConnection do start() with strong:%s",useStrongBinding);
             assert isRunningOnLauncherThread();
             assert mConnectionParams
                     == null : "setupConnection() called before start() in ChildProcessConnection.";
@@ -389,6 +393,7 @@ public class ChildProcessConnection {
     public void kill() {
         assert isRunningOnLauncherThread();
         IChildProcessService service = mService;
+        Log.w(TAG,"ChildProcessConnection called kill()");
         unbind();
         try {
             if (service != null) service.forceKill();
@@ -408,6 +413,7 @@ public class ChildProcessConnection {
         }
         try {
             TraceEvent.begin("ChildProcessConnection.ChildServiceConnection.onServiceConnected");
+            Log.d(TAG,"ChildProcessConnection onServiceConnected ....");
             mDidOnServiceConnected = true;
             mService = IChildProcessService.Stub.asInterface(service);
 
@@ -458,7 +464,7 @@ public class ChildProcessConnection {
             return;
         }
         mServiceDisconnected = true;
-        Log.w(TAG, "onServiceDisconnected (crash or killed by oom): pid=%d", mPid);
+        Log.e(TAG, "onServiceDisconnected (crash or killed by oom): pid=%d", mPid);
         stop(); // We don't want to auto-restart on crash. Let the browser do that.
 
         // If we have a pending connection callback, we need to communicate the failure to
@@ -472,7 +478,7 @@ public class ChildProcessConnection {
     private void onSetupConnectionResult(int pid) {
         mPid = pid;
         assert mPid != 0 : "Child service claims to be run by a process of pid=0.";
-
+        Log.e(TAG, "onSetupConnectionResult : pid=%d", pid);
         if (mConnectionCallback != null) {
             mConnectionCallback.onConnected(this);
         }
@@ -671,6 +677,7 @@ public class ChildProcessConnection {
     }
 
     private void onMemoryPressure(@MemoryPressureLevel int pressure) {
+        Log.w(TAG,"onMemoryPressure with pressure:%d",pressure);
         mLauncherHandler.post(() -> onMemoryPressureOnLauncherThread(pressure));
     }
 
