@@ -340,7 +340,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
     @Override
     public void preInflationStartup() {
         super.preInflationStartup();
-
+        Log.d("ChromeActivity","ChromeActivity::preInflationStartup");
         // We need to explicitly enable VR mode here so that the system doesn't kick us out of VR,
         // or drop us into the 2D-in-VR rendering mode, while we prepare for VR rendering.
         if (VrIntentUtils.isLaunchingIntoVr(this, getIntent())) {
@@ -371,7 +371,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
     @Override
     public void postInflationStartup() {
         super.postInflationStartup();
-
+        Log.d("ChromeActivity","ChromeActivity::postInflationStartup");
         Intent intent = getIntent();
         if (intent != null && getSavedInstanceState() == null) {
             VrShellDelegate.maybeHandleVrIntentPreNative(this, intent);
@@ -433,11 +433,6 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
 
         mModalDialogManager = createModalDialogManager();
         mPageViewTimer = new PageViewTimer(mTabModelSelector);
-
-        ChromeApplication app = (ChromeApplication)ContextUtils.getApplicationContext();
-        if (app != null) {
-            app.mBackgroundExtensions = new BackgroundExtensions(this);
-        }
     }
 
     @Override
@@ -852,7 +847,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
     @Override
     public void onStartWithNative() {
         assert mNativeInitialized : "onStartWithNative was called before native was initialized.";
-
+        Log.d("ChromeActivity","ChromeActivity::onStartWithNative");
         super.onStartWithNative();
         UpdateMenuItemHelper.getInstance().onStart();
         ChromeActivitySessionTracker.getInstance().onStartWithNative();
@@ -864,6 +859,10 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         if (mDeferredStartupQueued || getActivityTab() == null || !getActivityTab().isLoading()) {
             postDeferredStartupIfNeeded();
         }
+        // ---- initial wallet
+        ChromeApplication app = (ChromeApplication)ContextUtils.getApplicationContext();
+        Log.d("ChromeActivity","Initial Wallet in DeferredTask ...");
+        app.onInitWallet();
     }
 
     @Override

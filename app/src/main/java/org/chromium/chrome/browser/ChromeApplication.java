@@ -66,13 +66,12 @@ public class ChromeApplication extends Application {
     private DiscardableReferencePool mReferencePool;
 
     public BackgroundExtensions mBackgroundExtensions;
-    public static int inistanceID = 0;
+    public int initNum = 0;
 
     @Nullable
     private io.horizontalsystems.bankwallet.core.App wApp;
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public void onInitWallet(){
+        if (initNum >= 1) return;
         boolean browserProcess = ContextUtils.isMainProcess();
         String proName = ContextUtils.getProcessName();
         if (browserProcess && wApp != null){
@@ -80,12 +79,16 @@ public class ChromeApplication extends Application {
                 boolean wAppInitied = io.horizontalsystems.bankwallet.core.App.instance != null;
                 Log.v(TAG,"onCreate wallet App at process:" + proName);
                 androidx.work.WorkManager.initialize(this, Objects.requireNonNull(wApp).getWorkManagerConfiguration());
-                Log.v(TAG,"onCreate wallet wApp initial:" + wAppInitied);
+                Log.v(TAG,"onCreate wallet wApp initiaked :" + wAppInitied);
                 Objects.requireNonNull(wApp).onCreate();//在调用onCreate
             }catch (Throwable e){
                 Log.e("ChromeApplication","onCreate with exception:" + e.toString());
             }
         }//end browserPross
+    }
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     // Called by the framework for ALL processes. Runs before ContentProviders are created.
@@ -102,8 +105,9 @@ public class ChromeApplication extends Application {
         }
         checkAppBeingReplaced();
         ContextUtils.initApplicationContext(this);
-        inistanceID++;
-        Log.v(TAG,"ID:" + inistanceID + " App run in process: " + processName);
+
+        // every process space have a static variabel !!
+        //Log.v(TAG,"ID:" + inistanceID + " App run in process: " + processName);
         if (browserProcess) {
             if (BuildConfig.IS_MULTIDEX_ENABLED) {
                 ChromiumMultiDexInstaller.install(this);
@@ -168,7 +172,7 @@ public class ChromeApplication extends Application {
                 sAttachBaseContextMethod.setAccessible(true);
                 sAttachBaseContextMethod.invoke(wApp,context); //先attach
                 Objects.requireNonNull(wApp).setLocale(Locale.ENGLISH);
-
+                initNum=0;
             }catch (Throwable e){
                 Log.e("ChromeApplication","attachBaseContext wallet app exception:" + e.toString());
             }
