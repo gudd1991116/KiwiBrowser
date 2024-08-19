@@ -277,6 +277,9 @@ public abstract class ToolbarLayout extends FrameLayout implements Toolbar {
         if (mProgressBar.getParent() != null) mProgressBar.initializeAnimation();
     }
 
+    public void onWalletInited(){
+
+    }
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

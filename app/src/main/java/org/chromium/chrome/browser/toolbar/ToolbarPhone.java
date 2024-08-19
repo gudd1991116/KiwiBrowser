@@ -386,7 +386,7 @@ public class ToolbarPhone extends ToolbarLayout
         if (FeatureUtilities.isNewTabPageButtonEnabled()) changeIconToNTPIcon(mHomeButton);
 
         mWalletButton = (TintedImageButton) findViewById(R.id.wallet_button);
-
+    
         mOverscrollButton = (TintedImageButton) findViewById(R.id.overscroll_button);
 
         mUrlBar = (TextView) findViewById(R.id.url_bar);
@@ -409,6 +409,11 @@ public class ToolbarPhone extends ToolbarLayout
         setWillNotDraw(false);
     }
 
+    @Override
+    public void onWalletInited(){
+        super.onWalletInited();
+        mWalletButton.setVisibility(View.VISIBLE);
+    }
     /**
      * Initializes the background, padding, margins, etc. for the location bar background.
      */

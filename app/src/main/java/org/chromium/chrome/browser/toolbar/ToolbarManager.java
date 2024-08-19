@@ -1268,8 +1268,8 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
      */
     public void onDeferredStartup(final long activityCreationTimeMs,
             final String activityName) {
-        if (true)
-            return ;
+        //if (true)
+        //    return ;
         // Record startup performance statistics
         long elapsedTime = SystemClock.elapsedRealtime() - activityCreationTimeMs;
         if (elapsedTime < RECORD_UMA_PERFORMANCE_METRICS_DELAY_MS) {
@@ -1290,6 +1290,7 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
                     firstFocusTime - activityCreationTimeMs, MIN_FOCUS_TIME_FOR_UMA_HISTOGRAM_MS,
                     MAX_FOCUS_TIME_FOR_UMA_HISTOGRAM_MS, TimeUnit.MILLISECONDS, 50);
         }
+        mToolbar.onWalletInited();
     }
 
     /**
