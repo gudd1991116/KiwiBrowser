@@ -38,7 +38,8 @@ public class DexOptimizer {
             Log.e(TAG, "Dex file does not exist! " + dexFile.getAbsolutePath());
             return false;
         }
-
+        Log.i(TAG,"Optimize the Dexfile  , set to readable only for :" + dexFile.getAbsolutePath());
+        dexFile.setWritable(false);
         try {
             if (!DexFile.isDexOptNeeded(dexFile.getAbsolutePath())) {
                 return true;
@@ -63,7 +64,7 @@ public class DexOptimizer {
                 return false;
             }
         }
-
+        Log.i(TAG,"DexClassLoader to dir:" + generatedDexDir.getAbsolutePath());
         new DexClassLoader(
                 dexFile.getAbsolutePath(),
                 generatedDexDir.getAbsolutePath(),
@@ -71,7 +72,7 @@ public class DexOptimizer {
                 ClassLoader.getSystemClassLoader());
         File optimizedFile = new File(generatedDexDir, dexFile.getName());
         if (!optimizedFile.exists()) {
-            Log.e(TAG, "Failed to create dex.");
+            Log.e(TAG, "Failed to create dex :" + dexFile.getName());
             return false;
         }
 
@@ -85,7 +86,7 @@ public class DexOptimizer {
             Log.e(TAG, "Failed to make odex world readable.");
             return false;
         }
-
+        Log.i(TAG,"Optimize the Dexfile result: True !!");
         return true;
     }
 
