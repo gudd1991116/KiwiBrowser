@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/libraries" />
+            <option value="$PROJECT_DIR$/libraries/android_data_chart" />
+            <option value="$PROJECT_DIR$/libraries/android_media" />
+            <option value="$PROJECT_DIR$/libraries/autofill" />
+            <option value="$PROJECT_DIR$/libraries/base_res" />
+            <option value="$PROJECT_DIR$/libraries/chrome_res" />
+            <option value="$PROJECT_DIR$/libraries/content_res" />
+            <option value="$PROJECT_DIR$/libraries/customtabs" />
+            <option value="$PROJECT_DIR$/libraries/feed_basicstream" />
+            <option value="$PROJECT_DIR$/libraries/feed_piet" />
+            <option value="$PROJECT_DIR$/libraries/homepage" />
+            <option value="$PROJECT_DIR$/libraries/media" />
+            <option value="$PROJECT_DIR$/libraries/ui_res" />
+            <option value="$PROJECT_DIR$/libraries/web_content" />
+          </set>
+        </option>
+        <option name="resolveExternalAnnotations" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

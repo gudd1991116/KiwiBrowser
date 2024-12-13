@@ -1,0 +1,84 @@
+---------------------------- PROCESS STARTED (21381) for package com.bose.meta.browser ----------------------------
+2024-08-24 16:43:28.315 21381-21381 chromium                com.bose.meta.browser                I  [INFO:render_frame_host_manager.cc(688)] [RENDER] CleanUpNavigation -> DidStopLoading
+2024-08-24 16:43:28.317 21381-21381 chromium                com.bose.meta.browser                I  [INFO:render_view_host_impl.cc(382)] [RENDER] << GetWebkitPrefs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2024-08-24 16:43:28.379 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(766)] [RENDER] RenderThreadImpl::Init
+2024-08-24 16:43:28.379 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(785)] [RENDER] Init  ChildProcess set_main_thread ..
+2024-08-24 16:43:28.380 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(798)] [RENDER] Init gpu_ Gpu::Create completed
+2024-08-24 16:43:28.380 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1281)] [RENDER] ::InitializeWebkit  call blink::Initialize !!
+2024-08-24 16:43:28.380 21444-21496 chromium                pid-21444                            I  [INFO:language.cc(62)] [RENDER][BLINK] InitializePlatformLanguage, check IsMainThread :1
+2024-08-24 16:43:28.385 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1283)] [RENDER] ::InitializeWebkit blink Initialize complete
+2024-08-24 16:43:28.385 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1287)] [RENDER] ::InitializeWebkit v8::isolate  pre initial 
+2024-08-24 16:43:28.385 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1244)] [RENDER] InitializeCompositorThread create compositorThread for blink::scheduler
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1259)] [RENDER] InitializeCompositorThread PostTask ... over ...
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1302)] [RENDER] compositor_impl_side_task_runner initialled ! is compositor_task_runner_ :1
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(1340)] [RENDER]  RegisterSchemes   chrome://    chreom-detools://      view-source://   ...
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(807)] [RENDER] InitializeWebKit at :22997023966 bogo-microseconds
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(876)] [RENDER] Init ->RenderThreadStarted()
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:chrome_content_renderer_client.cc(376)] [RENDER] RenderThreadStarted 
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(952)] [RENDER] Init media::InitializeMediaLibrary() called
+2024-08-24 16:43:28.386 21444-21496 chromium                pid-21444                            I  [INFO:render_thread_impl.cc(979)] [RENDER] Init  set OnMemoryPressureListener
+2024-08-24 16:43:28.394 21444-21496 chromium                pid-21444                            I  [INFO:chrome_content_renderer_client.cc(502)] [RENDER] RenderFrame Creaed 
+2024-08-24 16:43:28.399 21444-21496 chromium                pid-21444                            I  [INFO:render_frame_impl.cc(2869)] [RENDER] CommitNavigation / common_params.url: chrome-extension://aijbcieokginbpnieiopnbbdjphjmfdi/index.html#/
+2024-08-24 16:43:28.410 21444-21496 chromium                pid-21444                            I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:Refused to execute inline script because it violates the following Content Security Policy directive: "script-src 'self' blob: filesystem: chrome-extension-resource:". Either the 'unsafe-inline' keyword, a hash ('sha256-xI1IWbwIKqWRFo99cjC+9DjswrMHTnB8g4ZOEewaiR8='), or a nonce ('nonce-...') is required to enable inline execution.
+2024-08-24 16:43:28.410 21444-21496 chromium                pid-21444                            I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:28.410 21444-21496 chromium                pid-21444                            I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+---------------------------- PROCESS STARTED (21444) for package com.bose.meta.browser ----------------------------
+---------------------------- PROCESS STARTED (21478) for package com.bose.meta.browser ----------------------------
+2024-08-24 16:43:29.350 21381-21381 chromium                com.bose.meta.browser                I  [INFO:render_view_host_impl.cc(382)] [RENDER] << GetWebkitPrefs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2024-08-24 16:43:29.471 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.471 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.471 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.472 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.472 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.472 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.541 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.541 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.541 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.542 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.542 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.543 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.543 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.543 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.543 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.544 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.544 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.544 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.628 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.628 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.628 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.630 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.630 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.630 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.631 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.631 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.631 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.632 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.632 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.632 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.641 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.641 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.641 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.642 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:29.642 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.642 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.724 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: chrome-extension://aijbcieokginbpnieiopnbbdjphjmfdi/static/fonts/wuicons.f0fbf8a0.ttf
+2024-08-24 16:43:29.724 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:29.724 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:29.776 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(5689)] [RENDER] DidStopLoading called from Blink-Render Thread !!
+2024-08-24 16:43:29.776 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(5700)] [RENDER] will call FrameDidStopLoading / FrameHostMsg_DidStopLoading
+2024-08-24 16:43:29.785 21381-21381 chromium                com.bose.meta.browser                I  [INFO:render_frame_host_manager.cc(711)] [RENDER] OndidStopLoading ... nofity use FrameMsg_DisStopLoading
+2024-08-24 16:43:30.471 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:30.471 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:30.471 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:30.472 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:30.473 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:30.473 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:30.473 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:30.473 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:30.473 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:31.582 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:31.582 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:31.582 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
+2024-08-24 16:43:31.586 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3716)] [RENDER] DidAddMessageToConsole:[system]
+2024-08-24 16:43:31.586 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3735)] [RENDER] Notifiy all observers_
+2024-08-24 16:43:31.586 21444-21496 chromium                com.bose.meta.browser                I  [INFO:render_frame_impl.cc(3743)] [RENDER] Send FrameHostMsg_DidAddMessageToConsole  ....
