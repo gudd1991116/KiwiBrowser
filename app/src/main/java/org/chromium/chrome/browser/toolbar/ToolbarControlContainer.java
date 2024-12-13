@@ -6,10 +6,13 @@ package org.chromium.chrome.browser.toolbar;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
@@ -26,11 +29,14 @@ import org.chromium.chrome.browser.widget.ToolbarProgressBar;
 import org.chromium.chrome.browser.widget.ViewResourceFrameLayout;
 import org.chromium.ui.UiUtils;
 import org.chromium.ui.resources.dynamics.ViewResourceAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Layout for the browser controls (omnibox, menu, tab strip, etc..).
  */
 public class ToolbarControlContainer extends FrameLayout implements ControlContainer {
+    private static final Logger log = LoggerFactory.getLogger(ToolbarControlContainer.class);
     private final float mTabStripHeight;
 
     private Toolbar mToolbar;
@@ -73,7 +79,8 @@ public class ToolbarControlContainer extends FrameLayout implements ControlConta
 
     @Override
     public int getToolbarBackgroundColor() {
-        return ((ToolbarLayout) mToolbar).getToolbarDataProvider().getPrimaryColor();
+//        return ((ToolbarLayout) mToolbar).getToolbarDataProvider().getPrimaryColor();
+        return Color.RED;
     }
 
     @Override
@@ -85,12 +92,18 @@ public class ToolbarControlContainer extends FrameLayout implements ControlConta
     @Override
     public void initWithToolbar(int toolbarLayoutId) {
         ViewStub toolbarStub = (ViewStub) findViewById(R.id.toolbar_stub);
+        Log.i("kiwi_log","ToolbarControlContainer-initWithToolbar-find view : toolbar_stub");
         toolbarStub.setLayoutResource(toolbarLayoutId);
         toolbarStub.inflate();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
         mToolbarContainer = (ToolbarViewResourceFrameLayout) findViewById(R.id.toolbar_container);
         mToolbarContainer.setToolbar(mToolbar);
+
+        // todo gudd 设置这里会在左右滑动toolbar的时候看到蓝色效果，但设置透明时却无效果
+//        mToolbarContainer.setBackgroundColor(Color.BLUE);
+
         mMenuBtn = findViewById(R.id.menu_button);
 
         if (mToolbar instanceof ToolbarTablet) {
@@ -99,6 +112,7 @@ public class ToolbarControlContainer extends FrameLayout implements ControlConta
             // are already initialized.)
             setBackgroundResource(R.drawable.toolbar_background);
         }
+//        setVisibility(View.GONE);
 
         assert mToolbar != null;
         assert mMenuBtn != null;

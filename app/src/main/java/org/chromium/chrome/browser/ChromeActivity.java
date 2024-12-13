@@ -23,6 +23,8 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import androidx.annotation.CallSuper;
+import androidx.core.content.ContextCompat;
+
 import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.Menu;
@@ -37,8 +39,8 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityManager.AccessibilityStateChangeListener;
 import android.view.accessibility.AccessibilityManager.TouchExplorationStateChangeListener;
-import android.util.Log;
 
+import org.chromium.base.Log;
 import org.chromium.chrome.browser.appmenu.AppMenu;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.base.ActivityState;
@@ -202,6 +204,7 @@ import io.horizontalsystems.bankwallet.modules.launcher.LaunchModule;
 public abstract class ChromeActivity extends AsyncInitializationActivity
         implements TabCreatorManager, AccessibilityStateChangeListener, PolicyChangeListener,
         ContextualSearchTabPromotionDelegate, SnackbarManageable, SceneChangeObserver {
+    private static String TAG = "ChromeActivity";
     /**
      * Factory which creates the AppMenuHandler.
      */
@@ -465,6 +468,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
 
         enableHardwareAcceleration();
         setLowEndTheme();
+        // 获取 control_container的布局
         int controlContainerLayoutId = getControlContainerLayoutId();
         WarmupManager warmupManager = WarmupManager.getInstance();
         if (warmupManager.hasViewHierarchyWithToolbar(controlContainerLayoutId)) {
@@ -509,6 +513,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                 // Inflate the correct toolbar layout for the device.
                 int toolbarLayoutId = getToolbarLayoutId();
                 if (toolbarLayoutId != NO_TOOLBAR_LAYOUT && controlContainer != null) {
+                    Log.i("kiwi_log","ChromeActivity-setContentView-start init with toolbar.");
                     controlContainer.initWithToolbar(toolbarLayoutId);
                 }
             } finally {
@@ -521,18 +526,21 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         // Set the status bar color to black by default. This is an optimization for
         // Chrome not to draw under status and navigation bars when we use the default
         // black status bar
-        setStatusBarColor(null, Color.BLACK);
-
+        // 默认情况下，将状态栏颜色设置为黑色。这是对 Chrome 的优化，当我们使用默认的黑色状态栏时，它不会在状态栏和导航栏下绘制
+        Log.i("kiwi_log", "ChromeActivity-setContentView()-设置状态栏颜色。绿");
+        setStatusBarColor(null, Color.GREEN);
         ViewGroup rootView = (ViewGroup) getWindow().getDecorView().getRootView();
         mCompositorViewHolder = (CompositorViewHolder) findViewById(R.id.compositor_view_holder);
         mCompositorViewHolder.setRootView(rootView);
 
         // Setting fitsSystemWindows to false ensures that the root view doesn't consume the insets.
+        // 将 fitsSystemWindows 设置为 false 可确保根视图不会使用边衬区。
         rootView.setFitsSystemWindows(false);
 
         // Add a custom view right after the root view that stores the insets to access later.
         // ContentViewCore needs the insets to determine the portion of the screen obscured by
         // non-content displaying things such as the OSK.
+        // 在根视图之后添加一个自定义视图，该视图存储边距以供以后访问。ContentViewCore 需要边衬区来确定屏幕中被非内容显示内容（如 OSK）遮挡的部分。
         mInsetObserverView = InsetObserverView.create(this);
         rootView.addView(mInsetObserverView, 0);
     }
@@ -638,6 +646,8 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
 
             @Override
             public void onShown(Tab tab) {
+                Log.i(TAG, "tabModelSelector onShown()");
+                Log.i("kiwi_log", "ChromeActivity-onShown()-设置状态栏颜色。tab.getThemeColor()");
                 setStatusBarColor(tab, tab.getThemeColor());
             }
 
@@ -683,6 +693,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             @Override
             public void onDidChangeThemeColor(Tab tab, int color) {
                 if (getActivityTab() != tab) return;
+                Log.i("kiwi_log", "ChromeActivity-onDidChangeThemeColor-设置状态栏颜色。color:"+color);
                 setStatusBarColor(tab, color);
 
                 if (getToolbarManager() == null) return;
@@ -695,7 +706,10 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
 
             @Override
             public void onContentChanged(Tab tab) {
-                if (getBottomSheet() != null) setStatusBarColor(tab, tab.getDefaultThemeColor());
+                if (getBottomSheet() != null) {
+                    Log.i("kiwi_log", "ChromeActivity-onContentChanged-设置状态栏颜色。tab.getDefaultThemeColor()");
+                    setStatusBarColor(tab, tab.getDefaultThemeColor());
+                }
             }
         };
 
@@ -892,6 +906,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
      * @param color The color that the status bar should be set to.
      */
     protected void setStatusBarColor(@Nullable Tab tab, int color) {
+        Log.i("kiwi_log", "ChromeActivity-setStatusBarColor");
         boolean useModernDesign =
                 supportsModernDesign() && FeatureUtilities.isChromeModernDesignEnabled();
         int statusBarColor = color;
@@ -901,9 +916,9 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             int systemUiVisibility = root.getSystemUiVisibility();
             boolean needsDarkStatusBarIcons =
                     !ColorUtils.shouldUseLightForegroundOnBackground(statusBarColor);
-            if (needsDarkStatusBarIcons) {
+            if (needsDarkStatusBarIcons) {// 将状态栏的图标和文本颜色设置为深色（通常是黑色）
                 systemUiVisibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            } else if (!needsDarkStatusBarIcons) {
+            } else if (!needsDarkStatusBarIcons) {// 恢复为默认的浅色图标和文本，移除该标志位
                 systemUiVisibility &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
             root.setSystemUiVisibility(systemUiVisibility);

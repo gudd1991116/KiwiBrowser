@@ -25,6 +25,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -52,6 +54,7 @@ import android.widget.TextView;
 
 import org.chromium.base.ContextUtils;
 import org.chromium.base.ApiCompatibilityUtils;
+import org.chromium.base.Log;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.metrics.RecordUserAction;
 import org.chromium.chrome.R;
@@ -407,6 +410,12 @@ public class ToolbarPhone extends ToolbarLayout
         inflateTabSwitchingResources();
 
         setWillNotDraw(false);
+        /*new Handler(Looper.myLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                set
+            }
+        },8000);*/
     }
 
     @Override
@@ -908,6 +917,7 @@ public class ToolbarPhone extends ToolbarLayout
         Activity activity = (Activity)getContext();
         switch (visualState) {
             case NEW_TAB_NORMAL:
+                Log.i("kiwi_log","ToolbarPhone-getToolbarColorForVisualState-switch-NEW_TAB_NORMAL");
                 if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
                     return Color.BLACK;
                 if (mLocationBar.useModernDesign() && mUrlExpansionPercent == 1.f) {
@@ -919,21 +929,25 @@ public class ToolbarPhone extends ToolbarLayout
                 }
                 return Color.TRANSPARENT;
             case NORMAL:
+                Log.i("kiwi_log","ToolbarPhone-getToolbarColorForVisualState-switch-NORMAL");
                 if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
                     return Color.BLACK;
                 return ColorUtils.getDefaultThemeColor(
                         getResources(), mLocationBar.useModernDesign(), false);
             case INCOGNITO:
+                Log.i("kiwi_log","ToolbarPhone-getToolbarColorForVisualState-switch-INCOGNITO");
                 if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
                     return Color.BLACK;
                 return ColorUtils.getDefaultThemeColor(
                         getResources(), mLocationBar.useModernDesign(), true);
             case BRAND_COLOR:
+                Log.i("kiwi_log","ToolbarPhone-getToolbarColorForVisualState-switch-BRAND_COLOR");
                 if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
                     return Color.BLACK;
                 return getToolbarDataProvider().getPrimaryColor();
             case TAB_SWITCHER_NORMAL:
             case TAB_SWITCHER_INCOGNITO:
+                Log.i("kiwi_log","ToolbarPhone-getToolbarColorForVisualState-switch-TAB_SWITCHER_INCOGNITO");
                 if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
                     return ApiCompatibilityUtils.getColor(res, R.color.tab_switcher_background);
                 if (ContextUtils.getAppSharedPreferences().getBoolean("enable_bottom_toolbar", false))
@@ -949,6 +963,7 @@ public class ToolbarPhone extends ToolbarLayout
                 }
                 return ApiCompatibilityUtils.getColor(res, R.color.tab_switcher_background);
             default:
+                Log.i("kiwi_log","ToolbarPhone-getToolbarColorForVisualState-switch-default");
                 assert false;
                 return ApiCompatibilityUtils.getColor(res, R.color.default_primary_color);
         }

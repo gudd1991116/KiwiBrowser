@@ -1,0 +1,47 @@
+[
+  {
+    "sort": 1,
+    "title": "Currency",
+    "url": "https://innews.infohubnews.app/ad/crypto?ts="
+  },
+  {
+    "sort": 2,
+    "title": "Crypto",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=crypto1&cc=test1&offset=0&limit=10&ts=17236873901&only_ai_news=true"
+  },
+  {
+    "sort": 3,
+    "title": "Travel",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=travel&cc=test1&offset=0&limit=10&ts=17236873901&only_ai_news=true"
+  },
+  {
+    "sort": 4,
+    "title": "Health",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=health&cc=test1&offset=0&limit=10&ts=17236873901&only_ai_news=true"
+  },
+  {
+    "sort": 4,
+    "title": "Sports",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=sports&cc=test1&offset=0&limit=10&ts=17236873901&only_ai_news=true"
+  },
+  {
+    "sort": 4,
+    "title": "Food",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=food&cc=test1&offset=0&limit=10&ts=17236873901&only_ai_news=true"
+  },
+  {
+    "sort": 5,
+    "title": "Entertainment",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=entertainment&cc=test1&offset=0&limit=10&ts=17236873901"
+  },
+  {
+    "sort": 6,
+    "title": "Business",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=business&cc=test1&offset=0&limit=10&ts=17236873901"
+  },
+  {
+    "sort": 7,
+    "title": "Headline",
+    "url": "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=headline&cc=test1&offset=0&limit=10&ts=17236873901"
+  }
+]

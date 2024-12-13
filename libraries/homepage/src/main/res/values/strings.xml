@@ -1,0 +1,12 @@
+<resources>
+    <string name="mises_category_market">Market</string>
+    <string name="mises_category_news">News</string>
+    <string name="mises_category_dapp">DAPP</string>
+    <string name="mises_category_events">Events</string>
+    <string name="mises_news_detail_title">AI News</string>
+    <string name="mises_hp_wallet_entrance_btn_title">Meta Wallet</string>
+    <string name="mises_hp_wallet_entrance_btn_subtitle">Access the decentralized network through a multi-chain cryptocurrency wallet.</string>
+    <string name="mises_currency_list_header_favorite">My Favorite</string>
+    <string name="mises_currency_list_header_all">All</string>
+    <string name="mises_no_result_found">No results found.</string>
+</resources>

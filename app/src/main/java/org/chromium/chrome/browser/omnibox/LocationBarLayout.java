@@ -1015,6 +1015,7 @@ public class LocationBarLayout
         mUrlBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, final boolean hasFocus) {
+                // todo gudd
                 onUrlFocusChange(hasFocus);
             }
         });

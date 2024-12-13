@@ -1,3 +1,4 @@
 include ':app', ':libraries:base_res', ':libraries:ui_res',':libraries:chrome_res',':libraries:content_res', \
     ':libraries:android_data_chart',':libraries:android_media',':libraries:customtabs',':libraries:media',\
     ':libraries:autofill',':libraries:web_content',':libraries:feed_basicstream',":libraries:feed_piet"
+include ':libraries:homepage'

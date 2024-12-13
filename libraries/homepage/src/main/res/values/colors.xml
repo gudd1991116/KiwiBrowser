@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="gray_b9b9b9">#B9B9B9</color>
+    <color name="gray_a1a1a1">#a1a1a1</color>
+    <color name="grey_f8f8f8">#f8f8f8</color>
+    <color name="gray_f0f0f1">#f0f0f1</color>
+    <color name="gray_1b252e">#1b252e</color>
+    <color name="grey_50_25">#40FAFAFA</color>
+    <color name="grey_100_50">#80F5F5F5</color>
+    <color name="grey_200_75">#BFEEEEEE</color>
+
+    <color name="black_1d252d">#1d252d</color>
+    <color name="black_1f1f1f">#1F1F1F</color>
+    <color name="black_222222">#222222</color>
+    <color name="black_232728">#232728</color>
+    <color name="black_2f2f2f">#2f2f2f</color>
+    <color name="black_333333">#333333</color>
+    <color name="black_38383c">#38383c</color>
+    <color name="black_4d4d4d">#4d4d4d</color>
+    <color name="black_666666">#666666</color>
+
+    <color name="mises_tab_selected">#685FF5</color>
+    <color name="mises_tab_unselected">#666666</color>
+    <color name="mises_color_text_normal">@color/black_232728</color>
+    <color name="mises_color_text_white">@android:color/white</color>
+    <color name="mises_color_text_disable">@color/gray_b9b9b9</color>
+    <color name="mises_color_text_title">@color/black_333333</color>
+    <color name="mises_color_text_value">@color/black_666666</color>
+    <color name="mises_color_text_empty_view">#9c9c9c</color>
+    <color name="mises_color_text_button_normal">@android:color/white</color>
+</resources>

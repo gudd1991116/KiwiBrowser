@@ -163,6 +163,11 @@ class AndroidListenerIntents {
 
             // Schedule the pending intent after the appropriate delay.
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !alarmManager.canScheduleExactAlarms()){
+      logger.warning("Unable to schedule alarm task !!!");
+      return;
+    }
+
     try {
       alarmManager.set(AlarmManager.RTC, executeMs, pendingIntent);
     } catch (SecurityException exception) {

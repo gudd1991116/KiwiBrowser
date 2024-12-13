@@ -5,6 +5,7 @@
 package org.chromium.chrome.browser.ntp;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Canvas;
@@ -19,18 +20,26 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.ContextUtils;
 import org.chromium.base.TraceEvent;
 import org.chromium.base.VisibleForTesting;
+import org.chromium.chrome.browser.ntp.ntp_hp.MisesHomePageView;
+import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnExpandListener;
+import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNewsClickListener;
+import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNtpListener;
+import org.chromium.chrome.browser.tabmodel.TabCreatorManager;
+import org.chromium.chrome.browser.tabmodel.TabModel;
 import org.chromium.chrome.browser.widget.TextViewWithCompoundDrawables;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeFeatureList;
@@ -63,7 +72,12 @@ import org.chromium.ui.base.DeviceFormFactor;
 
 import org.chromium.chrome.browser.accessibility.NightModePrefs;
 import android.graphics.Color;
+
+import com.google.android.material.appbar.AppBarLayout;
+
 import org.chromium.base.ApiCompatibilityUtils;
+
+import io.horizontalsystems.bankwallet.modules.launcher.LaunchModule;
 
 /**
  * The native new tab page, represented by some basic data such as title and url, and an Android
@@ -82,6 +96,7 @@ public class NewTabPageView
     private static final String PARAM_SIMPLIFIED_NTP_ABLATION = "simplified_ntp_ablation";
 
     private NewTabPageRecyclerView mRecyclerView;
+    private Activity mActivity;
 
     private NewTabPageLayout mNewTabPageLayout;
     private LogoView mSearchProviderLogoView;
@@ -101,6 +116,8 @@ public class NewTabPageView
     private UiConfig mUiConfig;
     private Runnable mSnapScrollRunnable;
     private Runnable mUpdateSearchBoxOnScrollRunnable;
+
+    private TabCreatorManager.TabCreator mTabCreator;
 
     /**
      * Whether the tiles shown in the layout have finished loading.
@@ -197,18 +214,105 @@ public class NewTabPageView
      * @param searchProviderIsGoogle Whether the search provider is Google.
      * @param scrollPosition The adapter scroll position to initialize to.
      */
-    public void initialize(NewTabPageManager manager, Tab tab, TileGroup.Delegate tileGroupDelegate,
-            boolean searchProviderHasLogo, boolean searchProviderIsGoogle, int scrollPosition) {
+    public void initialize(NewTabPageManager manager, Activity activity, Tab tab, TileGroup.Delegate tileGroupDelegate,
+                           boolean searchProviderHasLogo, boolean searchProviderIsGoogle, int scrollPosition) {
         TraceEvent.begin(TAG + ".initialize()");
+        mActivity = activity;
         mTab = tab;
         mManager = manager;
         mUiConfig = new UiConfig(this);
 
+        if (mActivity instanceof TabCreatorManager) {
+            TabCreatorManager tabCreatorManager = (TabCreatorManager)mActivity;
+            mTabCreator = tabCreatorManager.getTabCreator(false);;
+        }
+
         assert manager.getSuggestionsSource() != null;
 
         mRecyclerView = new NewTabPageRecyclerView(getContext());
+        mRecyclerView.setBackgroundResource(R.color.green_d);
         mRecyclerView.setContainsLocationBar(manager.isLocationBarShownInNTP());
-        addView(mRecyclerView);
+//        addView(mRecyclerView);
+        MisesHomePageView homePageView = new MisesHomePageView(getContext());
+        homePageView.setOnNewsClickListener(new MisesOnNewsClickListener() {
+            @Override
+            public void onClick(String link) {
+                Log.i("mises_log",TAG+"_ onClick : "+ link);
+                if (mTabCreator != null) {
+                    mTabCreator.launchUrl(link, TabModel.TabLaunchType.FROM_LINK);
+                }
+            }
+
+            @Override
+            public void onClickCrypto(String coin_name) {
+                Log.i("mises_log",TAG+"_ onClickCrypto : "+ coin_name);
+            }
+        });
+        homePageView.setOnExpandListener(new MisesOnExpandListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+//                    Log.i("mises_log",TAG+" AppBar 完全展开!");
+//                    isExpanded = true;
+                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+//                    Log.i("mises_log",TAG+" AppBar 完全收起!");
+//                    isExpanded = false;
+                } else {
+//                    Log.i("mises_log",TAG+" AppBar 部分展开或收起!");
+                }
+
+//                scrollOffset = verticalOffset;
+                Log.v(TAG, "appbarlayout onScrolled: scrollOffset=" + verticalOffset);
+            }
+        });
+        homePageView.setOnMisesNtpListener(new MisesOnNtpListener() {
+            @Override
+            public void updateNewsOptin(boolean isOptin) {
+
+            }
+
+            @Override
+            public void getFeed(boolean isNewContent) {
+
+            }
+
+            @Override
+            public void loadNewContent() {
+
+            }
+
+            @Override
+            public void checkForBraveStats() {
+
+            }
+
+            @Override
+            public void focusSearchBox() {
+                mManager.focusSearchBox(false, null);
+            }
+
+            @Override
+            public void launchWallet() {
+                LaunchModule.INSTANCE.start(getContext());
+            }
+
+        });
+
+        FrameLayout homePageViewContainer = new FrameLayout(getContext());
+        homePageViewContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) homePageViewContainer.getLayoutParams();
+        if (layoutParams != null) {
+            // todo gudd 临时设置homepageview的margin为0
+            /*layoutParams.topMargin = getContext().getResources().getDimensionPixelSize(R.dimen.toolbar_height_no_shadow)
+                    + getContext().getResources().getDimensionPixelSize(R.dimen.toolbar_progress_bar_height);*/
+            if (homePageView.getParent() != null) {
+                ((ViewGroup) homePageView.getParent()).removeAllViews();
+            }
+            homePageViewContainer.removeAllViews();
+            homePageViewContainer.addView(homePageView);
+        }
+        addView(homePageViewContainer);
+
 
         // Don't attach now, the recyclerView itself will determine when to do it.
         mNewTabPageLayout = mRecyclerView.getAboveTheFoldView();
@@ -408,6 +512,8 @@ public class NewTabPageView
                 searchBoxTextView.setText("");
             }
         });
+
+
         TraceEvent.end(TAG + ".initializeSearchBoxTextView()");
     }
 
@@ -898,8 +1004,7 @@ public class NewTabPageView
     }
 
     /**
-     * @see org.chromium.chrome.browser.compositor.layouts.content.
-     *         InvalidationAwareThumbnailProvider#shouldCaptureThumbnail()
+     * @see org.chromium.chrome.browser.compositor.layouts.content.InvalidationAwareThumbnailProvider#shouldCaptureThumbnail()
      */
     boolean shouldCaptureThumbnail() {
         if (getWidth() == 0 || getHeight() == 0) return false;
@@ -910,8 +1015,7 @@ public class NewTabPageView
     }
 
     /**
-     * @see org.chromium.chrome.browser.compositor.layouts.content.
-     *         InvalidationAwareThumbnailProvider#captureThumbnail(Canvas)
+     * @see org.chromium.chrome.browser.compositor.layouts.content.InvalidationAwareThumbnailProvider#captureThumbnail(Canvas)
      */
     void captureThumbnail(Canvas canvas) {
         mSearchProviderLogoView.endFadeAnimation();

@@ -290,7 +290,7 @@ public class NewTabPage
         mTitle = activity.getResources().getString(R.string.button_new_tab);
         mBackgroundColor = ApiCompatibilityUtils.getColor(activity.getResources(),
                 SuggestionsConfig.useModernLayout() ? R.color.modern_primary_color
-                                                    : R.color.ntp_bg);
+                        : R.color.ntp_bg);
         mThemeColor = ColorUtils.getDefaultThemeColor(
                 activity.getResources(), FeatureUtilities.isChromeModernDesignEnabled(), false);
 
@@ -339,7 +339,7 @@ public class NewTabPage
 
         LayoutInflater inflater = LayoutInflater.from(activity);
         mNewTabPageView = (NewTabPageView) inflater.inflate(R.layout.new_tab_page_view, null);
-        mNewTabPageView.initialize(mNewTabPageManager, mTab, mTileGroupDelegate,
+        mNewTabPageView.initialize(mNewTabPageManager,activity, mTab, mTileGroupDelegate,
                 mSearchProviderHasLogo,
                 TemplateUrlService.getInstance().isDefaultSearchEngineGoogle(),
                 getScrollPositionFromNavigationEntry());

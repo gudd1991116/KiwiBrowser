@@ -8,8 +8,8 @@ buildscript {
     }
     dependencies {
         //classpath 'com.android.tools.build:gradle:3.3.2'
-        classpath 'com.android.tools.build:gradle:8.1.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+        classpath 'com.android.tools.build:gradle:8.5.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -30,13 +30,13 @@ task clean(type: Delete) {
 }
 
 ext {
-    versionCode = 17
-    versionName = "73.0.3683.93"
+    versionCode = 609914404
+    versionName = "1.63.73"
 
     compileSdkVersion = 34
-    buildToolsVersion = "28.0.3"
+    buildToolsVersion = "34.0.0"  //28.0.3 -> 34
     minSdkVersion = 27
-    targetSdkVersion = 34
+    targetSdkVersion = 32
     kotlin_version = '1.8.0'
     material_version = "1.10.0"
     appcompat_version = "1.6.1"
@@ -61,4 +61,5 @@ ext {
     espressoVersion = "2.2.2"
     runnerVersion = "1.0.1"
     junitVersion = "4.12"
+    swipeRefresh = "1.1.0"
 }

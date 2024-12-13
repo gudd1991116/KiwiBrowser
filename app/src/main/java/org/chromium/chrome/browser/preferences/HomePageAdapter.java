@@ -54,7 +54,7 @@ public class HomePageAdapter extends BaseAdapter implements View.OnClickListener
         mHomePageSelector.add("Ntp");
         mHomePageDescriptions.add("Use Chrome Default HomePage");
         mSelectedHomePagePosition = 0;
-        String activeTheme = ContextUtils.getAppSharedPreferences().getString(PREF_HOMEPAGE_SELECTION, "WEB3");
+        String activeTheme = ContextUtils.getAppSharedPreferences().getString(PREF_HOMEPAGE_SELECTION, "NTP");
         for (int i = 0; i < mHomePageSelector.size(); ++i) {
             if (mHomePageSelector.get(i).equals(activeTheme)) {
                 mSelectedHomePagePosition = i;

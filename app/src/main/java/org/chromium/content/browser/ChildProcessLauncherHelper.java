@@ -425,7 +425,7 @@ public class ChildProcessLauncherHelper {
             return false;
         }
 
-        return !connection.isWaivedBoundOnlyOrWasWhenDied();
+        return connection.bindingStateCurrentOrWhenDied() > 0;
     }
 
     // Called on client (UI or IO) thread.
@@ -674,11 +674,8 @@ public class ChildProcessLauncherHelper {
 
         ChildProcessConnection connection = sLauncherByPid.get(pid).mLauncher.getConnection();
         if (connection == null) return false;
-        try {
-            connection.crashServiceForTesting();
-            return true;
-        } catch (RemoteException ex) {
-            return false;
-        }
+
+        connection.crashServiceForTesting();
+        return true;
     }
 }

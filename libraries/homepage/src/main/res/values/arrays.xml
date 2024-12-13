@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="home_category">
+        <item>@string/mises_category_market</item>
+        <item>@string/mises_category_news</item>
+        <item>@string/mises_category_dapp</item>
+        <item>@string/mises_category_events</item>
+    </string-array>
+</resources>

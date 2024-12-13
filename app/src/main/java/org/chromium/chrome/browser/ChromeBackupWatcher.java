@@ -46,12 +46,12 @@ public class ChromeBackupWatcher {
                 (sharedPreferences, key) -> {
                     // Update the backup if the user id or any of the backed up Android
                     // preferences change.
-                    if (key.equals(ChromeSigninController.SIGNED_IN_ACCOUNT_KEY)) {
+                    if (ChromeSigninController.SIGNED_IN_ACCOUNT_KEY.equals(key)) {
                         onBackupPrefsChanged();
                         return;
                     }
                     for (String pref : ChromeBackupAgent.BACKUP_ANDROID_BOOL_PREFS) {
-                        if (key.equals(pref)) {
+                        if (pref.equals(key)) {
                             onBackupPrefsChanged();
                             return;
                         }

@@ -129,6 +129,8 @@ import org.chromium.chrome.browser.accessibility.NightModePrefs;
 import org.chromium.base.ContextUtils;
 import android.graphics.Color;
 import org.chromium.base.ApiCompatibilityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -168,6 +170,7 @@ public class Tab
     private static final String TAG = "Tab";
 
     private static final String PRODUCT_VERSION = ChromeVersionInfo.getProductVersion();
+    private static final Logger log = LoggerFactory.getLogger(Tab.class);
 
     private long mNativeTabAndroid;
 
@@ -623,7 +626,9 @@ public class Tab
 
         Resources resources = mThemedApplicationContext.getResources();
         mIdealFaviconSize = resources.getDimensionPixelSize(R.dimen.default_favicon_size);
+        Log.i("kiwi_log","Tab-Constract Tab()- 开始计算默认主题色："+mDefaultThemeColor);
         mDefaultThemeColor = calculateDefaultThemeColor();
+        Log.i("kiwi_log","Tab-attach()-主题色值："+mDefaultThemeColor);
         mThemeColor = calculateThemeColor(false);
 
         // Restore data from the TabState, if it existed.
@@ -1127,9 +1132,11 @@ public class Tab
      *                                       changed.
      */
     void updateThemeColorIfNeeded(boolean didWebContentsThemeColorChange) {
+        Log.i("kiwi_log", "Tab-updateThemeColorIfNeeded-计算主题色");
         int themeColor = calculateThemeColor(didWebContentsThemeColorChange);
         if (themeColor == mThemeColor) return;
         mThemeColor = themeColor;
+        Log.i("kiwi_log","Tab-updateThemeColorIfNeeded-主题色值："+mThemeColor);
         RewindableIterator<TabObserver> observers = getTabObservers();
         while (observers.hasNext()) {
             observers.next().onDidChangeThemeColor(this, themeColor);
@@ -1621,7 +1628,9 @@ public class Tab
     public void attach(ChromeActivity activity, TabDelegateFactory tabDelegateFactory) {
         assert mIsDetached;
         updateWindowAndroid(activity.getWindowAndroid());
+        Log.i("kiwi_log","Tab-attach()-开始计算主题色");
         mDefaultThemeColor = calculateDefaultThemeColor();
+        Log.i("kiwi_log","Tab-attach()-主题色值："+mDefaultThemeColor);
         updateThemeColorIfNeeded(false);
 
         // Update for the controllers that need the Compositor from the new Activity.
@@ -3239,6 +3248,7 @@ public class Tab
      */
     public static Tab createTabForLazyLoad(boolean incognito, WindowAndroid nativeWindow,
             TabLaunchType type, int parentId, LoadUrlParams loadUrlParams) {
+        Log.i("kiwi_log","Tab 2");
         Tab tab = new Tab(INVALID_TAB_ID, parentId, incognito, nativeWindow, type,
                 TabCreationState.FROZEN_FOR_LAZY_LOAD, null);
         tab.setPendingLoadParams(loadUrlParams);
@@ -3287,6 +3297,7 @@ public class Tab
      * @return Whether the theme color for this tab is the default color.
      */
     public boolean isDefaultThemeColor() {
+        Log.i("kiwi_log","此选项卡的主题颜色是否为默认颜色 : "+ (mDefaultThemeColor == getThemeColor()));
         return mDefaultThemeColor == getThemeColor();
     }
 
@@ -3295,6 +3306,7 @@ public class Tab
      */
     @VisibleForTesting
     public int getDefaultThemeColor() {
+        Log.i("kiwi_log","获取主题色值："+mDefaultThemeColor);
         return mDefaultThemeColor;
     }
 

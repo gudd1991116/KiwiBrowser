@@ -12,6 +12,11 @@ import android.view.MotionEvent;
 import android.view.PointerIcon;
 import android.view.View;
 
+import java.util.List;
+
+import io.horizontalsystems.bankwallet.core.App;
+import io.horizontalsystems.bankwallet.core.storage.FavoriteCoin;
+
 /**
  * This class overrides {@link onResolvePointerIcon} method to correctly determine the pointer icon
  * from a mouse motion event. This is needed because the default android impl does not consider
@@ -20,6 +25,7 @@ import android.view.View;
 public class CoordinatorLayoutForPointer extends CoordinatorLayout {
     public CoordinatorLayoutForPointer(Context context, AttributeSet attrs) {
         super(context, attrs);
+
     }
 
     private boolean isWithinBoundOfView(int x, int y, View view) {

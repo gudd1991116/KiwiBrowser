@@ -39,6 +39,7 @@ public class OmahaService extends OmahaBase implements BackgroundTask {
                 getScheduler().createAlarm(OmahaClient.createIntent(getContext()), nextTimestampMs);
                 Log.i(TAG, "Scheduled using AlarmManager and IntentService");
             } else {
+                Log.i(TAG,"Build SDK:%d Use ThreadUtils to run schedule",Build.VERSION.SDK_INT);
                 final long delay = nextTimestampMs - currentTimestampMs;
                 ThreadUtils.runOnUiThread(new Runnable() {
                     @Override

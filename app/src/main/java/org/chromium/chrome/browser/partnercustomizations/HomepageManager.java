@@ -163,7 +163,8 @@ public class HomepageManager {
     public String getPrfHomepageMeatUri() {
         // 1.CHANNEL RULES 2.Debug/Release RULES
         String metaHomepage = UrlConstants.LOCAL_NTP_META3;
-        String selectedHomepage = mSharedPreferences.getString(PREF_HOMEPAGE_SELECTION,"WEB3").toUpperCase();
+//        String selectedHomepage = mSharedPreferences.getString(PREF_HOMEPAGE_SELECTION,"WEB3").toUpperCase();
+        String selectedHomepage = mSharedPreferences.getString(PREF_HOMEPAGE_SELECTION,"NTP").toUpperCase();
         if("WEB2".contentEquals(selectedHomepage)){
             metaHomepage = UrlConstants.LOCAL_NTP_META2;
         }else if("NTP".contentEquals(selectedHomepage)){

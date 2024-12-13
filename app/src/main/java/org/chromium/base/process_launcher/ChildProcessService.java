@@ -4,9 +4,13 @@
 
 package org.chromium.base.process_launcher;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,6 +19,8 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.RemoteException;
 import android.util.SparseArray;
+
+import androidx.core.app.NotificationCompat;
 
 import org.chromium.base.BaseSwitches;
 import org.chromium.base.CommandLine;
@@ -25,6 +31,7 @@ import org.chromium.base.ThreadUtils;
 import org.chromium.base.annotations.JNINamespace;
 import org.chromium.base.annotations.MainDex;
 import org.chromium.base.memory.MemoryPressureMonitor;
+import org.web3j.abi.datatypes.Int;
 
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -179,8 +186,7 @@ public abstract class ChildProcessService extends Service {
         ContextUtils.initApplicationContext(getApplicationContext());
 
         mDelegate.onServiceCreated();
-
-        mMainThread = new Thread(new Runnable() {
+        mMainThread = new Thread(null,new Runnable() {
             @Override
             public void run() {
                 try {
@@ -190,6 +196,7 @@ public abstract class ChildProcessService extends Service {
                             mMainThread.wait();
                         }
                     }
+
                     assert mServiceBound;
                     CommandLine.init(mCommandLineParams);
 
@@ -204,7 +211,7 @@ public abstract class ChildProcessService extends Service {
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to load native library.", e);
                     }
-                    Log.w(TAG,"loadNativeLibrary in Main Thread return: %s",nativeLibraryLoaded);
+                    Log.v(TAG,"loadNativeLibrary in Main Thread return: %s",nativeLibraryLoaded);
                     if (!nativeLibraryLoaded) {
                         System.exit(-1);
                     }
@@ -245,13 +252,14 @@ public abstract class ChildProcessService extends Service {
                     if (mActivitySemaphore.tryAcquire()) {
                         Log.v(TAG,"main thread runMain() -->  call ContentMain::nativeMain -> JNI_ContentMain_Start(..) !");
                         mDelegate.runMain();
+                        Log.v(TAG,"main thread runMain() return call nativeExitChildProcess");
                         nativeExitChildProcess();
                     }
                 } catch (InterruptedException e) {
                     Log.w(TAG, "%s startup failed: %s", MAIN_THREAD_NAME, e);
                 }
             }
-        }, MAIN_THREAD_NAME);
+        }, MAIN_THREAD_NAME,8*1024*1024);
         mMainThread.start();
     }
 
@@ -291,12 +299,14 @@ public abstract class ChildProcessService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        assert !mServiceBound;
+        Log.i(TAG,"onBind called whit mServiceBound :%s ",mServiceBound);
+        if (mServiceBound) return mBinder;
 
         // We call stopSelf() to request that this service be stopped as soon as the client unbinds.
         // Otherwise the system may keep it around and available for a reconnect. The child
         // processes do not currently support reconnect; they must be initialized from scratch every
         // time.
+        //Log.w(TAG,"onBind the ChildProcessService , but don't stopSelf thie version !!!!!");
         stopSelf();
 
         mBindToCallerCheck =

@@ -37,7 +37,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompat_version"
     implementation "androidx.compose.material:material:$rootProject.ext.compose_version"   
-    implementation "com.google.android.material:material:$rootProject.ext.material_version" 
+    implementation "com.google.android.material:material:$rootProject.ext.material_version"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$rootProject.ext.swipeRefresh"
     implementation project(':libraries:content_res') 
     implementation project(':libraries:android_data_chart')
     implementation project(':libraries:android_media')

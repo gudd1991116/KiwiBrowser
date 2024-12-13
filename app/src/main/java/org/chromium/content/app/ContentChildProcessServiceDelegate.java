@@ -102,8 +102,10 @@ public class ContentChildProcessServiceDelegate implements ChildProcessServiceDe
     public boolean loadNativeLibrary(Context hostContext) {
         String processType =
                 CommandLine.getInstance().getSwitchValue(ContentSwitches.SWITCH_PROCESS_TYPE);
+        Log.d(TAG,"loadNativeLibrary  processType:%s",processType);
         // Enable selective JNI registration when the process is not the browser process.
         if (processType != null) {
+            Log.d(TAG,"loadNativeLibrary  JNIUtils.enableSelectiveJniRegistration");
             JNIUtils.enableSelectiveJniRegistration();
         }
 
@@ -121,6 +123,7 @@ public class ContentChildProcessServiceDelegate implements ChildProcessServiceDe
         }
         boolean isLoaded = false;
         boolean loadAtFixedAddressFailed = false;
+        Log.d(TAG,"loadNativeLibrary  LibraryLoader  use linker:%s",Linker.isUsed());
         try {
             LibraryLoader.getInstance().loadNowOverrideApplicationContext(hostContext);
             isLoaded = true;
@@ -155,6 +158,7 @@ public class ContentChildProcessServiceDelegate implements ChildProcessServiceDe
             return false;
         }
 
+        Log.d(TAG,"loadNativeLibrary  nativeRetrieveFileDescriptorsIdsToKeys");
         // Now that the library is loaded, get the FD map,
         // TODO(jcivelli): can this be done in onBeforeMain? We would have to mode onBeforeMain
         // so it's called before FDs are registered.
@@ -171,6 +175,7 @@ public class ContentChildProcessServiceDelegate implements ChildProcessServiceDe
 
     @Override
     public void onBeforeMain() {
+        Log.d(TAG,"loadNativeLibrary  nativeInitChildProcess: cpu %d, features %d",mCpuCount,mCpuFeatures);
         nativeInitChildProcess(mCpuCount, mCpuFeatures);
         ThreadUtils.postOnUiThread(() -> MemoryPressureUma.initializeForChildService());
     }

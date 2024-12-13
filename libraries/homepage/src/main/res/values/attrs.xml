@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MisesCryptoSortView">
+        <attr name="mises_type_name" format="string" />
+        <attr name="mises_selected_color" format="reference|color" />
+        <attr name="mises_default_color" format="reference|color" />
+        <attr name="mises_default_sort" format="enum">
+            <enum name="def" value="0" />
+            <enum name="desc" value="1"/>
+            <enum name="asc" value="2" />
+        </attr>
+    </declare-styleable>
+
+</resources>

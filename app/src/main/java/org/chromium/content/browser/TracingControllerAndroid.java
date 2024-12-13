@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -71,6 +72,7 @@ public class TracingControllerAndroid {
     private String mFilename;
 
     public TracingControllerAndroid(Context context) {
+        Log.i(TAG,"Initial TracingBroadcastReceiver");
         mContext = context;
         mBroadcastReceiver = new TracingBroadcastReceiver();
         mIntentFilter = new TracingIntentFilter(context);
@@ -94,7 +96,10 @@ public class TracingControllerAndroid {
      * Register a BroadcastReceiver in the given context.
      */
     public void registerReceiver(Context context) {
-        context.registerReceiver(getBroadcastReceiver(), getIntentFilter());
+        Log.i(TAG,"Register BroadcastReceiver for Tracing ...");
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            context.registerReceiver(getBroadcastReceiver(), getIntentFilter(),Context.RECEIVER_NOT_EXPORTED);
+        else context.registerReceiver(getBroadcastReceiver(), getIntentFilter());
     }
 
     /**
@@ -102,6 +107,7 @@ public class TracingControllerAndroid {
      * @param context
      */
     public void unregisterReceiver(Context context) {
+        Log.i(TAG,"UnRegister BroadcastReceiver for Tracing ...");
         context.unregisterReceiver(getBroadcastReceiver());
     }
 

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.Callback;
+import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.metrics.RecordHistogram;
@@ -55,6 +56,7 @@ import org.chromium.chrome.browser.ntp.NativePageFactory;
 import org.chromium.chrome.browser.ntp.NewTabPage;
 import org.chromium.chrome.browser.offlinepages.OfflinePageBridge;
 import org.chromium.chrome.browser.omnibox.LocationBar;
+import org.chromium.chrome.browser.omnibox.LocationBarPhone;
 import org.chromium.chrome.browser.omnibox.UrlFocusChangeListener;
 import org.chromium.chrome.browser.partnercustomizations.HomepageManager;
 import org.chromium.chrome.browser.partnercustomizations.HomepageManager.HomepageStateListener;
@@ -94,6 +96,8 @@ import android.app.Activity;
 import org.chromium.chrome.browser.accessibility.NightModePrefs;
 import android.graphics.Color;
 import org.chromium.base.ApiCompatibilityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -103,6 +107,8 @@ import java.util.concurrent.TimeUnit;
  * with the rest of the application to ensure the toolbar is always visually up to date.
  */
 public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListener {
+
+    private static final Logger log = LoggerFactory.getLogger(ToolbarManager.class);
 
     /**
      * Handle UI updates of menu icons. Only applicable for phones.
@@ -415,6 +421,26 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
 
             @Override
             public void onContentChanged(Tab tab) {
+                if (tab.isNativePage()){
+                    Log.i("kiwi_log","ToolbarManager-onContentChanged(Tab tab)- isNativePage");
+//                    mControlContainer.setVisibility(View.GONE);
+                    // todo gudd
+//                    mControlContainer.setBackgroundColor(Color.TRANSPARENT);
+                    mControlContainer.setAlpha(0);
+                    /*if (mToolbar instanceof ToolbarPhone){
+//                        Log.i("kiwi_log","ToolbarManager-onContentChanged(Tab tab)- mToolbar-setBackgroundResource(transparent)");
+                        mToolbar.setBackgroundColor(Color.TRANSPARENT);
+                    }*/
+
+                    if (mLocationBar instanceof LocationBarPhone){
+//                        Log.i("kiwi_log","ToolbarManager-onContentChanged(Tab tab)- mToolbar-setAlpha(0)");
+//                        ((LocationBarPhone) mLocationBar).setAlpha(1);
+                    }
+                }else{
+                    Log.i("kiwi_log","ToolbarManager-onContentChanged(Tab tab)- isWebPage");
+//                    mControlContainer.setVisibility(View.VISIBLE);
+                    mControlContainer.setAlpha(1);
+                }
                 mToolbar.onTabContentViewChanged();
                 if (shouldShowCursorInLocationBar()) {
                     mToolbar.getLocationBar().showUrlBarCursorWithoutFocusAnimations();
@@ -1158,9 +1184,11 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
 
         if (mControlsVisibilityDelegate == null) return;
         if (hasFocus) {
+            mControlContainer.setAlpha(1);
             mFullscreenFocusToken = mControlsVisibilityDelegate
                     .showControlsPersistentAndClearOldToken(mFullscreenFocusToken);
         } else {
+            mControlContainer.setAlpha(0);
             mControlsVisibilityDelegate.hideControlsPersistent(mFullscreenFocusToken);
             mFullscreenFocusToken = FullscreenManager.INVALID_TOKEN;
         }

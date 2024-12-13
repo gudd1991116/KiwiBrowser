@@ -32,16 +32,16 @@ public class ChildConnectionAllocator {
     @VisibleForTesting
     public interface ConnectionFactory {
         ChildProcessConnection createConnection(Context context, ComponentName serviceName,
-                boolean bindToCaller, boolean bindAsExternalService, Bundle serviceBundle);
+                boolean bindToCaller, boolean bindAsExternalService, Bundle serviceBundle,String instanceName);
     }
 
     /** Default implementation of the ConnectionFactory that creates actual connections. */
     private static class ConnectionFactoryImpl implements ConnectionFactory {
         @Override
         public ChildProcessConnection createConnection(Context context, ComponentName serviceName,
-                boolean bindToCaller, boolean bindAsExternalService, Bundle serviceBundle) {
+                boolean bindToCaller, boolean bindAsExternalService, Bundle serviceBundle, String instanceName) {
             return new ChildProcessConnection(
-                    context, serviceName, bindToCaller, bindAsExternalService, serviceBundle);
+                    context, serviceName, bindToCaller, bindAsExternalService, serviceBundle,instanceName);
         }
     }
 
@@ -216,7 +216,7 @@ public class ChildConnectionAllocator {
                 };
 
         ChildProcessConnection connection = mConnectionFactory.createConnection(
-                context, serviceName, mBindToCaller, mBindAsExternalService, serviceBundle);
+                context, serviceName, mBindToCaller, mBindAsExternalService, serviceBundle,null);
         mChildProcessConnections[slot] = connection;
 
         connection.start(mUseStrongBinding, serviceCallbackWrapper);
