@@ -1,5 +1,6 @@
 package org.chromium.chrome.browser.ntp.ntp_hp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -47,6 +49,7 @@ import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesAssetsUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesDensityUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesIdentity;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesSharedPreferenceUtil;
+import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesStatusBarUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.view.topsite.MisesHorizontalTopsiteView;
 
 import java.lang.reflect.Type;
@@ -73,6 +76,7 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
 
 //    private TabCreatorManager.TabCreator mTabCreator;
 
+    private View mMainCoordinator;
     private final MediaType mediaType;
     private Toolbar mToolbarPlace;
     private AppCompatImageView mGradientBgIV;
@@ -159,6 +163,12 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
         mTabLayout = findViewById(R.id.tabLayout);
         mViewPager = findViewById(R.id.viewPager);
         mAppBarLayout = findViewById(R.id.appbarLayout);
+
+        if (getContext() != null && getContext() instanceof Activity){
+            Activity activity = (Activity) getContext();
+            mMainCoordinator = activity.findViewById(R.id.coordinator);
+            Log.i("mises_log", "mMainCoordinator is null ?= " + (mMainCoordinator == null));
+        }
     }
 
     private void initViewPager() {
@@ -276,6 +286,18 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
             float gradientImgAlpha = 1 - (float) Math.abs(verticalOffset) / (maxScrollHeight + fiftySix);
             gradientImgAlpha = Math.max(0, Math.min(gradientImgAlpha, 1));
             mGradientBgIV.setAlpha(gradientImgAlpha);
+            if (mMainCoordinator != null){
+                int alphaValue = (int) (gradientImgAlpha * 255);
+                Log.i("mises_log", "mMainCoordinator is not Null, alphaValue = "+ alphaValue);
+                mMainCoordinator.getBackground().setAlpha(alphaValue);
+                if (getContext() != null && getContext() instanceof Activity){
+                    if (alphaValue < 0.5){
+                        MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_LIGHT);
+                    }else{
+                        MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_DARK);
+                    }
+                }
+            }
 
             int startScrollThreshold = fiftySix + fortySix;
             int offScreenViewHeight = mMisesSearchBox.getHeight();// 留下的搜索框高度
@@ -395,10 +417,9 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (getContext() != null){
-            int screenWidth = MisesDensityUtil.screenWidth(getContext());
-//            CoordinatorLayout.LayoutParams cl =
-//            mGradientBgIV.
+        if (getContext() != null && getContext() instanceof Activity){
+            Activity activity = (Activity) getContext();
+            mMainCoordinator = activity.findViewById(R.id.coordinator);
         }
     }
 

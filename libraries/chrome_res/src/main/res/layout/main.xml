@@ -9,6 +9,8 @@
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@mipmap/mises_gradient_bg"
         android:layout_weight="1" >
 
         <org.chromium.chrome.browser.compositor.CompositorViewHolder
@@ -116,6 +118,7 @@
         android:id="@+id/menu_anchor_stub"
         android:layout_width="0px"
         android:layout_height="0px"
+        android:fitsSystemWindows="true"
         android:layout_gravity="bottom|start"
         />
     <!-- This empty view is used as the anchor for navigation history popup -->
@@ -123,5 +126,6 @@
         android:id="@+id/navigation_popup_anchor_stub"
         android:layout_width="match_parent"
         android:layout_height="0px"
+        android:fitsSystemWindows="true"
         android:layout_gravity="bottom" />
 </merge>

@@ -628,7 +628,7 @@ public class Tab
         mIdealFaviconSize = resources.getDimensionPixelSize(R.dimen.default_favicon_size);
         Log.i("kiwi_log","Tab-Constract Tab()- 开始计算默认主题色："+mDefaultThemeColor);
         mDefaultThemeColor = calculateDefaultThemeColor();
-        Log.i("kiwi_log","Tab-attach()-主题色值："+mDefaultThemeColor);
+        Log.i("kiwi_log","Tab-Constract Tab()- 主题色值："+mDefaultThemeColor);
         mThemeColor = calculateThemeColor(false);
 
         // Restore data from the TabState, if it existed.
@@ -3297,7 +3297,7 @@ public class Tab
      * @return Whether the theme color for this tab is the default color.
      */
     public boolean isDefaultThemeColor() {
-        Log.i("kiwi_log","此选项卡的主题颜色是否为默认颜色 : "+ (mDefaultThemeColor == getThemeColor()));
+        Log.i("kiwi_log","Tag-此选项卡的主题颜色是否为默认颜色 : "+ (mDefaultThemeColor == getThemeColor()));
         return mDefaultThemeColor == getThemeColor();
     }
 
@@ -3306,7 +3306,7 @@ public class Tab
      */
     @VisibleForTesting
     public int getDefaultThemeColor() {
-        Log.i("kiwi_log","获取主题色值："+mDefaultThemeColor);
+        Log.i("kiwi_log","Tab-获取主题色值："+mDefaultThemeColor);
         return mDefaultThemeColor;
     }
 

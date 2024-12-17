@@ -528,14 +528,14 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         // black status bar
         // 默认情况下，将状态栏颜色设置为黑色。这是对 Chrome 的优化，当我们使用默认的黑色状态栏时，它不会在状态栏和导航栏下绘制
         Log.i("kiwi_log", "ChromeActivity-setContentView()-设置状态栏颜色。绿");
-        setStatusBarColor(null, Color.GREEN);
+        setStatusBarColor(null, Color.TRANSPARENT);
         ViewGroup rootView = (ViewGroup) getWindow().getDecorView().getRootView();
         mCompositorViewHolder = (CompositorViewHolder) findViewById(R.id.compositor_view_holder);
         mCompositorViewHolder.setRootView(rootView);
 
         // Setting fitsSystemWindows to false ensures that the root view doesn't consume the insets.
         // 将 fitsSystemWindows 设置为 false 可确保根视图不会使用边衬区。
-        rootView.setFitsSystemWindows(false);
+        rootView.setFitsSystemWindows(true);
 
         // Add a custom view right after the root view that stores the insets to access later.
         // ContentViewCore needs the insets to determine the portion of the screen obscured by
@@ -706,8 +706,15 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
 
             @Override
             public void onContentChanged(Tab tab) {
-                if (getBottomSheet() != null) {
+                /*if (getBottomSheet() != null) {
                     Log.i("kiwi_log", "ChromeActivity-onContentChanged-设置状态栏颜色。tab.getDefaultThemeColor()");
+                    setStatusBarColor(tab, tab.getDefaultThemeColor());
+                }*/
+                if (tab.isNativePage()){
+                    Log.i("kiwi_log","ChromeActivity-onContentChanged-isNativePage");
+                    setStatusBarColor(tab, Color.TRANSPARENT);
+                }else{
+                    Log.i("kiwi_log","ChromeActivity-onContentChanged-isWebPage");
                     setStatusBarColor(tab, tab.getDefaultThemeColor());
                 }
             }
@@ -913,22 +920,47 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         boolean supportsDarkStatusIcons = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
         View root = getWindow().getDecorView().getRootView();
         if (useModernDesign && supportsDarkStatusIcons) {
+            Log.i("kiwi_log","useModernDesign & supportsDarkStatusIcons");
             int systemUiVisibility = root.getSystemUiVisibility();
             boolean needsDarkStatusBarIcons =
                     !ColorUtils.shouldUseLightForegroundOnBackground(statusBarColor);
             if (needsDarkStatusBarIcons) {// 将状态栏的图标和文本颜色设置为深色（通常是黑色）
                 systemUiVisibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                root.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             } else if (!needsDarkStatusBarIcons) {// 恢复为默认的浅色图标和文本，移除该标志位
+                root.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 systemUiVisibility &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
-            root.setSystemUiVisibility(systemUiVisibility);
+//            root.setSystemUiVisibility(systemUiVisibility);
         } else {
+            Log.i("kiwi_log","!!!useModernDesign & supportsDarkStatusIcons");
             statusBarColor = (tab != null && tab.isDefaultThemeColor())
                     ? Color.BLACK
                     : ColorUtils.getDarkenedColorForStatusBar(color);
         }
 
         ApiCompatibilityUtils.setStatusBarColor(getWindow(), statusBarColor);
+    }
+
+
+    public static void setStatusBarFlags(Activity activity, boolean multiWindowShow, boolean nightMode, boolean nativePage) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = activity.getWindow();
+                if (window != null) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    if (nightMode || (multiWindowShow && nativePage)) {
+                        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    } else {
+                        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    }
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.setStatusBarColor(Color.TRANSPARENT);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createContextReporterIfNeeded() {
