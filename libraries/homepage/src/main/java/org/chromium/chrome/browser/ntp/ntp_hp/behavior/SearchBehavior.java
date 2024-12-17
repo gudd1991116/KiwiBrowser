@@ -37,7 +37,7 @@ public class SearchBehavior extends CoordinatorLayout.Behavior<View> {
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, View child,
                                    View dependency) {
-        if (dependency != null && dependency.getId() == R.id.header_part) {
+        if (dependency != null && dependency.getId() == R.id.headerPart) {
             dependentView = new WeakReference<>(dependency);
             return true;
         }

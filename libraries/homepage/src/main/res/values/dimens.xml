@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="mises_tool_bar_height">56dp</dimen>
+    <dimen name="mises_search_box_height">56dp</dimen>
     <dimen name="mises_toolbar_button_width">32dp</dimen>
     <dimen name="mises_toolbar_button_height">48dp</dimen>
+    <dimen name="mises_header_total_height">276dp</dimen>
 </resources>

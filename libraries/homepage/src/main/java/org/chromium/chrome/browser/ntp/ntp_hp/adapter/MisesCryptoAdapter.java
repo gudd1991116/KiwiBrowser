@@ -266,10 +266,7 @@ public class MisesCryptoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             String coinPrice = data.getPrice();
             if (!TextUtils.isEmpty(coinPrice)) {
                 try {
-                    double dPrice = Double.parseDouble(coinPrice);
-                    Log.i("mises_log", "需要转的值：" + coinPrice);
                     String priceStr = "$" + MisesNumberUtil.retainTwoDecimalPlaces(coinPrice);
-                    Log.i("mises_log", "转完后的值：" + priceStr);
                     price.setText(priceStr);
                 } catch (NumberFormatException e) {
                     Log.e("mises_log", "Coin price convert failed. Error message : " + e.getMessage());
