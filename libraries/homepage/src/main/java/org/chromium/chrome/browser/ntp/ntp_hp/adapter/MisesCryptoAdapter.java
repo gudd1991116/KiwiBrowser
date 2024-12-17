@@ -23,7 +23,6 @@ import org.chromium.chrome.browser.ntp.ntp_hp.view.MisesCryptoSortView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by gudd on 2024/11/11.
@@ -39,7 +38,7 @@ public class MisesCryptoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public final static int TYPE_ALL_CURRENCY_COIN = 3;
 
     public final static int GROUP_ID_FAVORITE = 0;
-    public final static int GROUP_ID_SUGGEST = 1;
+    public final static int GROUP_ID_ALL = 1;
 
     // 保存HeaderHolder的引用
     private HeaderViewHolder mHeaderViewHolder;
@@ -130,36 +129,39 @@ public class MisesCryptoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void updateGroup(int groupId, List<MisesBitCoinModel.CryptoModel> newGroupItems) {
         int startIndex = -1;
-        int endIndex;
+        int endIndex = -1;
 
         for (int i = 0; i < mData.size(); i++) {
             MisesBitCoinModel.CryptoModel misesMultiItemEntity = mData.get(i);
             if (misesMultiItemEntity != null) {
                 if (misesMultiItemEntity.getGroupId() == groupId) {
-                    if (misesMultiItemEntity.getItemType() == TYPE_ALL_CURRENCY_TITLE) {
+                    if (misesMultiItemEntity.getItemType() == TYPE_FAVORITE_TITLE && startIndex == -1) {
                         startIndex = i;
-                        break;
                     }
+                }else if (misesMultiItemEntity.getItemType() == TYPE_ALL_CURRENCY_TITLE && endIndex == -1) {
+                    endIndex = i ;
                 }
             }
         }
 
-        if (startIndex == -1) {
-            // 如果未找到分组标题，返回
+        if (startIndex < 0
+                || endIndex < 0
+                || startIndex > mData.size()
+                || endIndex > mData.size()
+                || startIndex == endIndex) {
             return;
         }
 
-        endIndex = mData.size() - 1;
         // 移除旧分组数据
-        int oldGroupSize = endIndex - startIndex;
-        if (oldGroupSize >= startIndex + 1) {
-            mData.subList(startIndex + 1, oldGroupSize + 1).clear();
+        int deleteCount = endIndex - startIndex -1;
+        if (deleteCount > 0 ) {
+            mData.subList(startIndex + 1, endIndex).clear();
         }
-        // 插入新的分组数据
-        mData.addAll(startIndex + 1, newGroupItems);
-        // 通知adapter更新
-        notifyItemRangeRemoved(startIndex + 1, oldGroupSize);
-        notifyItemRangeInserted(startIndex + 1, newGroupItems.size());
+        notifyItemRangeRemoved(startIndex + 1, deleteCount);
+        if (!newGroupItems.isEmpty()) {
+            Log.i("mises_log","addData startIndex : "+ startIndex+1+", newGroupItems : "+ newGroupItems.size());
+            addData(startIndex + 1,newGroupItems);
+        }
     }
 
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {

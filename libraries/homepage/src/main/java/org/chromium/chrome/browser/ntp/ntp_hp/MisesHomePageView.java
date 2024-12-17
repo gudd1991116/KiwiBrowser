@@ -284,6 +284,7 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
             int absoluteOffset = Math.abs(verticalOffset);
             // 如果滑动到指定位置则开始将mMisesSearchBox从顶部往下移动
             if (absoluteOffset >= startScrollThreshold) {
+                mMisesSearchBox.setVisibility(VISIBLE);
                 // 剩余滑动距离
                 int remainingScroll = maxScrollHeight - absoluteOffset ;
                 // 剩余比例
@@ -300,6 +301,7 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
             } else {
                 Log.i("mises_log","translationY="+-offScreenViewHeight);
                 mMisesSearchBox.setTranslationY(-offScreenViewHeight);
+                mMisesSearchBox.setVisibility(GONE);
 //                mToolbarPlace.setAlpha(0);
                 mWalletBtnRoot.setAlpha(1);
             }
@@ -307,9 +309,9 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
 
 
             // 设置滑动距离回调
-            if (mExpandListener != null) {
+            /*if (mExpandListener != null) {
                 mExpandListener.onOffsetChanged(appBarLayout, verticalOffset);
-            }
+            }*/
         });
     }
 
@@ -387,6 +389,16 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
                 mNewsCategories.clear();
                 mNewsCategories.addAll(list);
             }
+        }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (getContext() != null){
+            int screenWidth = MisesDensityUtil.screenWidth(getContext());
+//            CoordinatorLayout.LayoutParams cl =
+//            mGradientBgIV.
         }
     }
 

@@ -30,18 +30,12 @@ import org.chromium.chrome.browser.ntp.ntp_hp.adapter.MisesMultiItemEntity;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.currency.model.MisesCurrencyBasicModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesBaseModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesBitCoinModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesCategoryModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsFeedModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNewsClickListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesSortTypeEnum;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesUrlPropertyModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesMD5Util;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesNetworkHelper;
-import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesRestInterface;
 import org.chromium.chrome.browser.ntp.ntp_hp.provider.MisesFavoriteCoinListProvider;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesAppUtil;
-import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesAssetsUtil;
-import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesGsonUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesIdentity;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesNumberUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesSharedPreferenceUtil;
@@ -52,8 +46,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
@@ -116,19 +108,26 @@ public class MisesCryptoFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("mises_log", "mises crypto fragment onResumt.");
+        Log.i("mises_log", "mises crypto fragment onResume.");
         if (mFavoriteCoinProvider != null) {
             List<String> favoriteCoinUidList = mFavoriteCoinProvider.getFavoriteCoinUidList();
             if (favoriteCoinUidList != null && !favoriteCoinUidList.isEmpty()) {
                 favoriteList.clear();
                 favoriteList.addAll(favoriteCoinUidList);
+
+                favoriteList.forEach(ss -> Log.i("mises_log", "avoriteList : favorite:" + ss));
                 List<MisesBitCoinModel.CryptoModel> data = mCryptoAdapter.getData();
                 // 判断列表中是否已经存在数据
                 if (!data.isEmpty()) {
                     // 过滤出推荐列表中包含的收藏货币uid列表（uid是唯一识别号）
                     List<MisesBitCoinModel.CryptoModel> collect =
                             data.stream()
-                                    .filter(cryptoModel -> favoriteList.contains(cryptoModel.getUid()))
+                                    .filter(cryptoModel -> {
+                                        Log.i("mises_log", "cryptoModel-Uid=" + cryptoModel.getUid() + ", favoriteList.contains(cryptoModel.getUid()) = " + favoriteList.contains(cryptoModel.getUid()) + ", cryptoModel.getGroupId() = " + cryptoModel.getGroupId());
+                                        boolean f = favoriteList.contains(cryptoModel.getUid()) && cryptoModel.getGroupId() == MisesCryptoAdapter.GROUP_ID_ALL;
+                                        return f;
+                                    })
+                                    .distinct()
                                     .sorted((o1, o2) -> MisesNumberUtil.comparePrices(o2.getPrice(), o1.getPrice()))
                                     .collect(Collectors.toList());
                     // 判断是否包含收藏标题
@@ -146,14 +145,15 @@ public class MisesCryptoFragment extends Fragment {
                         suggestCurrencyHeader.setName(requireContext().getString(R.string.mises_currency_list_header_favorite));
                         suggestCurrencyHeader.setItemType(MisesCryptoAdapter.TYPE_FAVORITE_TITLE);
                         suggestCurrencyHeader.setGroupId(MisesCryptoAdapter.GROUP_ID_FAVORITE);
+
                         mCryptoAdapter.addData(suggestCurrencyHeader);
                         Log.i("mises_log", "收藏列表修中对象状态修改为：收藏和收藏分组");
-                        collect.forEach(cryptoModel -> {
-                            cryptoModel.setItemType(MisesCryptoAdapter.TYPE_FAVORITE_COIN);
-                            cryptoModel.setGroupId(MisesCryptoAdapter.GROUP_ID_FAVORITE);
-                        });
+                /*collect.forEach(cryptoModel -> {
+                    cryptoModel.setItemType(MisesCryptoAdapter.TYPE_FAVORITE_COIN);
+                    cryptoModel.setGroupId(MisesCryptoAdapter.GROUP_ID_FAVORITE);
+                });*/
                         // 添加所有收藏货币列表
-                        mCryptoAdapter.addData(1, collect);
+                        mCryptoAdapter.addData(1, getCryptoModels(collect, MisesCryptoAdapter.TYPE_FAVORITE_COIN, MisesCryptoAdapter.GROUP_ID_FAVORITE));
                     } else {
                         Log.i("mises_log", "按收藏标题组更新收藏列表");
                         // 如果列表存在收藏数据，则更新收藏数据
@@ -171,9 +171,9 @@ public class MisesCryptoFragment extends Fragment {
         if (mFavoriteCoinProvider != null) {
             List<String> favoriteCoinUidList = mFavoriteCoinProvider.getFavoriteCoinUidList();
             if (favoriteCoinUidList != null && !favoriteCoinUidList.isEmpty()) {
-                Log.i("mises_log", "收藏列表不为空："+new Gson().toJson(favoriteList));
+                Log.i("mises_log", "收藏列表不为空：" + new Gson().toJson(favoriteList));
                 favoriteList.addAll(favoriteCoinUidList);
-            }else{
+            } else {
                 Log.i("mises_log", "收藏列表为空");
             }
         }
@@ -183,86 +183,68 @@ public class MisesCryptoFragment extends Fragment {
      * 首次进入界面时，判断本地内存是否存在缓存数据。
      * 如果存在缓存数据，先从缓存数据中过滤出匹配收藏的货币列表的uid相关数据，并插入到列表前面，最后将缓存数据按默认排序进行排列插入列表
      */
-    private void initDefaultData(/*List<MisesBitCoinModel.CryptoModel> cryptoModels*/) {
-        Log.i("mises_log", "go into initDefaultData()");
+    private void initDefaultData() {
         mCryptoAdapter.mData.clear();
         mCryptoAdapter.notifyDataSetChanged();
-        // 获取推荐货币缓存列表
+        // 获取全部货币缓存列表-不包含收藏
         String cryptoListJsonOfCache = MisesSharedPreferenceUtil.getInstance(getContext()).getString(MisesSharedPreferenceUtil.KEY_CRYPTO_LIST_CACHE, "");
-        Log.i("mises_log", "缓存货币列表：" + cryptoListJsonOfCache);
         if (!TextUtils.isEmpty(cryptoListJsonOfCache)) {
-            Log.i("mises_log", "缓存货币列表不为空");
             Gson gson = new Gson();
             Type type = new TypeToken<List<MisesBitCoinModel.CryptoModel>>() {
             }.getType();
 
             // 将缓存列表json数据转换为对象列表
             List<MisesBitCoinModel.CryptoModel> mSuggestCurrencyList = gson.fromJson(cryptoListJsonOfCache, type);
-            Log.i("mises_log", "转换缓存货币json数据为对象列表。");
             if (mSuggestCurrencyList != null && !mSuggestCurrencyList.isEmpty()) {
-                Log.i("mises_log", "缓存货币列表对象size=" + mSuggestCurrencyList.size());
                 // 过滤出推荐列表中包含的收藏货币uid列表（uid是唯一识别号），并按price价格排序
                 List<MisesBitCoinModel.CryptoModel> collect =
                         mSuggestCurrencyList.stream()
-                                .filter(cryptoModel -> favoriteList.contains(cryptoModel.getUid()))
+                                .filter(cryptoModel -> favoriteList.contains(cryptoModel.getUid()) && cryptoModel.getGroupId() == MisesCryptoAdapter.GROUP_ID_ALL)
                                 .sorted((o1, o2) -> MisesNumberUtil.comparePrices(o2.getPrice(), o1.getPrice()))
                                 .collect(Collectors.toList());
 
-                Log.i("mises_log", "过滤收藏对应列表");
                 if (!collect.isEmpty()) {
-                    Log.i("mises_log", "收藏列表不为空，添加收藏列表标题");
-                    // 创建收藏货币头标题
-                    MisesBitCoinModel.CryptoModel favoriteCurrencyHeader = new MisesBitCoinModel.CryptoModel();
-                    favoriteCurrencyHeader.setName("My Favorite");
-                    favoriteCurrencyHeader.setItemType(MisesCryptoAdapter.TYPE_FAVORITE_TITLE);
-                    favoriteCurrencyHeader.setGroupId(MisesCryptoAdapter.GROUP_ID_FAVORITE);
-                    List<MisesBitCoinModel.CryptoModel> favoriteCurrencies = new ArrayList<>();
-                    favoriteCurrencies.add(favoriteCurrencyHeader);
-                    mCryptoAdapter.addData(favoriteCurrencies);
-                    // 设置收藏数据类型和分组类型
-                    Log.i("mises_log", "收藏列表对象设置分组状态：收藏和收藏组");
-                    collect.forEach(cryptoModel -> {
-                        cryptoModel.setItemType(MisesCryptoAdapter.TYPE_FAVORITE_COIN);
-                        cryptoModel.setGroupId(MisesCryptoAdapter.GROUP_ID_FAVORITE);
-                    });
-                    Log.i("mises_log", "收藏列表添加到分组");
-                    // 收藏货币列表插入到列表
-                    mCryptoAdapter.addData(collect);
+                    // 插入收藏货币标题
+                    mCryptoAdapter.addData(getCryptoModels("My Favorite", MisesCryptoAdapter.TYPE_FAVORITE_TITLE, MisesCryptoAdapter.GROUP_ID_FAVORITE));
+                    // 插入收藏货币列表
+                    mCryptoAdapter.addData(getCryptoModels(collect, MisesCryptoAdapter.TYPE_FAVORITE_COIN, MisesCryptoAdapter.GROUP_ID_FAVORITE));
                 }
+                // 插入全部货币标题
+                mCryptoAdapter.addData(getCryptoModels("All", MisesCryptoAdapter.TYPE_ALL_CURRENCY_TITLE, MisesCryptoAdapter.GROUP_ID_ALL));
 
-                Log.i("mises_log", "添加默认推荐货币标题头");
-                // 创建推荐默认货币头标题
-                MisesBitCoinModel.CryptoModel suggestCurrencyHeader = new MisesBitCoinModel.CryptoModel();
-                suggestCurrencyHeader.setName("All");
-                suggestCurrencyHeader.setItemType(MisesCryptoAdapter.TYPE_ALL_CURRENCY_TITLE);
-                suggestCurrencyHeader.setGroupId(MisesCryptoAdapter.GROUP_ID_SUGGEST);
-                Log.i("mises_log", "插入推荐标题头");
-                List<MisesBitCoinModel.CryptoModel> suggestHeaderCurrencies = new ArrayList<>();
-                suggestHeaderCurrencies.add(suggestCurrencyHeader);
-                mCryptoAdapter.addData(suggestHeaderCurrencies);
-
-                /*mSuggestCurrencyList.forEach(cryptoModel -> {
-                    cryptoModel.setItemType(MisesCryptoAdapter.TYPE_ALL_CURRENCY_COIN);
-                    cryptoModel.setGroupId(MisesCryptoAdapter.GROUP_ID_SUGGEST);
-                });*/
-
-                List<MisesBitCoinModel.CryptoModel> suggestCurrencies = new ArrayList<>();
-                for (int i = 0; i < mSuggestCurrencyList.size(); i++) {
-                    MisesBitCoinModel.CryptoModel originalModel = mSuggestCurrencyList.get(i);
-                    MisesBitCoinModel.CryptoModel cryptoModel = originalModel.clone();
-                    cryptoModel.setItemType(MisesCryptoAdapter.TYPE_ALL_CURRENCY_COIN);
-                    cryptoModel.setGroupId(MisesCryptoAdapter.GROUP_ID_SUGGEST);
-                    suggestCurrencies.add(cryptoModel);
-                }
-
+                List<MisesBitCoinModel.CryptoModel> suggestCurrencies = getCryptoModels(mSuggestCurrencyList, MisesCryptoAdapter.TYPE_ALL_CURRENCY_COIN, MisesCryptoAdapter.GROUP_ID_ALL);
+                // 排序全部货币（不包含收藏部分）
                 int sortType = mCryptoAdapter.getSortType();
-                Log.i("mises_log", "当前排序类型：" + sortType + ", 并开始排序。");
                 sortWithCryptoList(sortType, suggestCurrencies);
-                // 添加所有默认推荐货币列表
-                Log.i("mises_log", "将推荐货币列表插入到列表中");
+
+                // 插入所有默认推荐货币列表
                 mCryptoAdapter.addData(suggestCurrencies);
             }
         }
+    }
+
+    @NonNull
+    private static List<MisesBitCoinModel.CryptoModel> getCryptoModels(String headerTitle, int itemType, int groupId) {
+        MisesBitCoinModel.CryptoModel favoriteCurrencyHeader = new MisesBitCoinModel.CryptoModel();
+        favoriteCurrencyHeader.setName(headerTitle);
+        favoriteCurrencyHeader.setItemType(itemType);
+        favoriteCurrencyHeader.setGroupId(groupId);
+        List<MisesBitCoinModel.CryptoModel> favoriteCurrencies = new ArrayList<>();
+        favoriteCurrencies.add(favoriteCurrencyHeader);
+        return favoriteCurrencies;
+    }
+
+    @NonNull
+    private static List<MisesBitCoinModel.CryptoModel> getCryptoModels(List<MisesBitCoinModel.CryptoModel> mSuggestCurrencyList, int itemType, int groupId) {
+        List<MisesBitCoinModel.CryptoModel> suggestCurrencies = new ArrayList<>();
+        for (int i = 0; i < mSuggestCurrencyList.size(); i++) {
+            MisesBitCoinModel.CryptoModel originalModel = mSuggestCurrencyList.get(i);
+            MisesBitCoinModel.CryptoModel cryptoModel = originalModel.clone();
+            cryptoModel.setItemType(itemType);
+            cryptoModel.setGroupId(groupId);
+            suggestCurrencies.add(cryptoModel);
+        }
+        return suggestCurrencies;
     }
 
     private void getData(boolean isRefresh) {
@@ -273,23 +255,23 @@ public class MisesCryptoFragment extends Fragment {
 
         String time = String.valueOf(System.currentTimeMillis());
         String header = MisesMD5Util.to32BitMD5(MisesAppUtil.getAppVersionName(requireContext()) + MisesIdentity.getCid() + "1" + MisesNetworkHelper.getInstance().API2_KEY + time);
-        Log.i("mises_log","mises crypto list req header : " + header);
+        Log.i("mises_log", "mises crypto list req header : " + header);
 
-        RequestBody requestBody = RequestBody.create(generateCryptoListReqParams(MisesIdentity.getCid(),time),mediaType);
+        RequestBody requestBody = RequestBody.create(generateCryptoListReqParams(MisesIdentity.getCid(), time), mediaType);
         Call<MisesBaseModel<MisesCurrencyBasicModel>> currencyList = MisesNetworkHelper.getInstance().getBaseApi2Interface().getCurrencyList(header, requestBody);
         currencyList.enqueue(new Callback<MisesBaseModel<MisesCurrencyBasicModel>>() {
             @Override
             public void onResponse(@NonNull Call<MisesBaseModel<MisesCurrencyBasicModel>> call, @NonNull Response<MisesBaseModel<MisesCurrencyBasicModel>> response) {
                 Log.i("mises_log", "fetch data into onResponse.");
                 hideRefresh();
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.i("mises_log", "请求货币列表接口响应成功");
                     MisesBaseModel<MisesCurrencyBasicModel> body = response.body();
-                    if (body != null){
+                    if (body != null) {
                         List<MisesCurrencyBasicModel> data = body.getData();
                         Log.i("mises_log", "请求货币列表接口响应成功");
                         List<MisesBitCoinModel.CryptoModel> models = convertCurrencyListToCryptoList(
-                                data, MisesCryptoAdapter.TYPE_ALL_CURRENCY_COIN, MisesCryptoAdapter.GROUP_ID_SUGGEST);
+                                data, MisesCryptoAdapter.TYPE_ALL_CURRENCY_COIN, MisesCryptoAdapter.GROUP_ID_ALL);
                         saveToCache(models);
                         Log.i("mises_log", "保存从服务器获取的的货币列表到缓存。");
 
@@ -383,10 +365,10 @@ public class MisesCryptoFragment extends Fragment {
         // 对列表进行排序
         sortWithCryptoList(sortType, groupItems);
 
-        Log.i("mises_log", "rangeIndex adapter data size : " + mCryptoAdapter.getData().size()+" , groupSize = "+ groupItems.size());
+        Log.i("mises_log", "rangeIndex adapter data size : " + mCryptoAdapter.getData().size() + " , groupSize = " + groupItems.size());
         for (int i = 0; i < groupItems.size(); i++) {
             int rangeIndex = startIndex + 1 + i;
-            Log.i("mises_log", "rangeIndex = " + rangeIndex+", i = "+i);
+            Log.i("mises_log", "rangeIndex = " + rangeIndex + ", i = " + i);
             mCryptoAdapter.getData().set(rangeIndex, groupItems.get(i));
         }
         /*int displaySize = mCryptoAdapter.getData().size();
