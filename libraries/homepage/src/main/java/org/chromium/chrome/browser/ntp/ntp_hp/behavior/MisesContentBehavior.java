@@ -9,17 +9,17 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import java.util.List;
 
-public class ContentBehavior extends HeaderScrollingViewBehavior {
+public class MisesContentBehavior extends MisesHeaderScrollingViewBehavior {
 
     private int mDependsLayoutId;
     private int mFinalY;
     private int mHeaderOffsetRange;
 
 
-    public ContentBehavior() {
+    public MisesContentBehavior() {
     }
 
-    public ContentBehavior(Context context, AttributeSet attrs) {
+    public MisesContentBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

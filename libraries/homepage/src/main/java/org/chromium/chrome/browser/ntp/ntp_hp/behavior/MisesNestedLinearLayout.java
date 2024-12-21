@@ -2,7 +2,6 @@ package org.chromium.chrome.browser.ntp.ntp_hp.behavior;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -20,7 +19,7 @@ import androidx.core.view.ViewCompat;
  * @author xujun
  */
 
-public class NestedLinearLayout extends LinearLayout implements NestedScrollingChild2 {
+public class MisesNestedLinearLayout extends LinearLayout implements NestedScrollingChild2 {
 
     private final int[] offset = new int[2];
     private final int[] consumed = new int[2];
@@ -33,15 +32,15 @@ public class NestedLinearLayout extends LinearLayout implements NestedScrollingC
     private int mScaledTouchSlop;
     private int mDownY;
 
-    public NestedLinearLayout(Context context) {
+    public MisesNestedLinearLayout(Context context) {
         this(context, null);
     }
 
-    public NestedLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public MisesNestedLinearLayout(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NestedLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MisesNestedLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initData();
     }

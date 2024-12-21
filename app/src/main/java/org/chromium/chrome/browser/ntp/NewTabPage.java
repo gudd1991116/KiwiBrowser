@@ -342,7 +342,7 @@ public class NewTabPage
         mNewTabPageView.initialize(mNewTabPageManager,activity, mTab, mTileGroupDelegate,
                 mSearchProviderHasLogo,
                 TemplateUrlService.getInstance().isDefaultSearchEngineGoogle(),
-                getScrollPositionFromNavigationEntry());
+                getScrollPositionFromNavigationEntry(),tabModelSelector);
 
         eventReporter.onSurfaceOpened();
 

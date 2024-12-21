@@ -7,7 +7,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/mises_homepage_top_sites_height"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         app:layout_constraintTop_toTopOf="parent" />

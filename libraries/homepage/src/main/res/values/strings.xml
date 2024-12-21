@@ -1,7 +1,7 @@
 <resources>
-    <string name="mises_behavior_header">org.chromium.chrome.browser.ntp.ntp_hp.behavior.HeaderBehavior</string>
-    <string name="mises_behavior_search">org.chromium.chrome.browser.ntp.ntp_hp.behavior.SearchBehavior</string>
-    <string name="mises_behavior_content">org.chromium.chrome.browser.ntp.ntp_hp.behavior.ContentBehavior</string>
+    <string name="mises_behavior_header">org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesHeaderBehavior</string>
+    <string name="mises_behavior_search">org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesSearchBehavior</string>
+    <string name="mises_behavior_content">org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesContentBehavior</string>
 
     <string name="mises_category_market">Market</string>
     <string name="mises_category_news">News</string>

@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -30,8 +31,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.chromium.chrome.browser.R;
-import org.chromium.chrome.browser.ntp.ntp_hp.behavior.ContentBehavior;
-import org.chromium.chrome.browser.ntp.ntp_hp.behavior.HeaderBehavior;
+import org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesContentBehavior;
+import org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesHeaderBehavior;
+import org.chromium.chrome.browser.ntp.ntp_hp.common.MisesConstants;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.MisesDAPPFragment;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.news.MisesNewsFragment;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.currency.MisesCryptoFragment;
@@ -44,11 +46,15 @@ import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNtpListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesMD5Util;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesNetworkHelper;
 import org.chromium.chrome.browser.ntp.ntp_hp.provider.MisesFavoriteCoinListProvider;
+import org.chromium.chrome.browser.ntp.ntp_hp.provider.MisesTabSelectorProvider;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesAppUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesAssetsUtil;
-import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesDensityUtil;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesIdentity;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesSharedPreferenceUtil;
+import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesStatusBarUtil;
+import org.chromium.chrome.browser.ntp.ntp_hp.view.MisesSearchBoxView;
+import org.chromium.chrome.browser.ntp.ntp_hp.view.toolbar.MisesToolbarView;
+import org.chromium.chrome.browser.ntp.ntp_hp.view.MisesWalletEntranceView;
 import org.chromium.chrome.browser.ntp.ntp_hp.view.topsite.MisesHorizontalTopsiteView;
 
 import java.lang.reflect.Type;
@@ -68,40 +74,36 @@ import retrofit2.Response;
  * Created by gudd on 2024/11/7.
  */
 public class MisesHomePageView extends LinearLayout implements View.OnClickListener, MisesOnNewsClickListener, MisesFavoriteCoinListProvider, DefaultLifecycleObserver {
-    private static final String TAG = "MisesHomePageView";
     public final static String CRYPTO_DEFAULT = "Currency";
     private final String mKey_NtpCategoryForSp;
     private final int mNtpType;// Native page 的数据源类型，1:web2; 2:web3
 
 //    private TabCreatorManager.TabCreator mTabCreator;
 
-    private HeaderBehavior mHeaderBehavior;
-    private ContentBehavior mContentBehavior;
+    private MisesHeaderBehavior mHeaderBehavior;
 
     private View mMainCoordinator;
     private final MediaType mediaType;
-//    private Toolbar mToolbarPlace;
     private AppCompatImageView mGradientBgIV;
-    private ConstraintLayout mMisesSearchBox, mSearchBox;
-    private ConstraintLayout mWalletBtnRoot;
-    private AppCompatTextView mMisesSearchBoxText;
+    private ConstraintLayout mMisesSearchBox;
+    private MisesToolbarView mToolbarView;
+    private MisesSearchBoxView mSearchBoxView;
+    private MisesWalletEntranceView mWalletEntranceView;
     private MisesHorizontalTopsiteView mTopSiteView;
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
-//    private AppBarLayout mAppBarLayout;
 
+    private MisesTabSelectorProvider mTabSelectorProvider;
     private MisesFavoriteCoinListProvider mFavoriteCoinProvider;
-    //    private OnMisesNtpListener mMisesNtpListener;
     private MisesOnNtpListener mMisesNtpListener;
     private MisesOnNewsClickListener mNewsClickListener;
     private MisesOnExpandListener mExpandListener;
 
-    private int mStatusBarHeight;//状态栏高度
     private int mHeaderHeight;//总高度
-    private int mWeatherHeight;//天气高度
     private int mContentOffset;//新闻偏移量
-    private int mBannerOffset;//首页背景偏移量
-    private int mWebsiteOffset;//名站偏移量
+    private int mToolbarOffset;//首页toolbar偏移量
+    private int mSearchBoxHeight;// searchBox的高度
+    private int mTopSiteOffset;//名站偏移量
 
     private final ArrayList<MisesCategoryModel> mNewsCategories = new ArrayList<>();
 
@@ -132,6 +134,7 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
             }
         }*/
 
+        initHeight();
         initBehavior();
         initView();
         initData();
@@ -141,22 +144,13 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
     }
 
     private void initHeight() {
-        mWebsiteOffset = MisesDensityUtil.dip2px(getContext(), 50);
-        mStatusBarHeight = MisesDensityUtil.statusBarHeight(getContext());
-        mBannerOffset = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_tool_bar_height);
-        mHeaderHeight = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_header_total_height) + mStatusBarHeight;
-        mWeatherHeight = mBannerOffset + mStatusBarHeight;
+        int mStatusBarHeight = 0;//MisesDensityUtil.statusBarHeight(getContext());
+//        mTopSiteOffset = MisesDensityUtil.dip2px(getContext(), R.dimen.mises_search_box_height);
+        mTopSiteOffset = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_search_box_height);
+        mToolbarOffset = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_tool_bar_height);
+        mSearchBoxHeight = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_search_box_height);
+        mHeaderHeight = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_homepage_header_total_height) + mStatusBarHeight;
         mContentOffset = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_tool_bar_height) + mStatusBarHeight;
-    }
-
-    @Override
-    public void onResume(@NonNull LifecycleOwner owner) {
-        /*if (mFavoriteCoinProvider != null) {
-            List<String> favoriteCoinUidList = mFavoriteCoinProvider.getFavoriteCoinUidList();
-            if (favoriteCoinUidList != null && favoriteCoinUidList.isEmpty()){
-
-            }
-        }*/
     }
 
     @Override
@@ -168,85 +162,129 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
     }
 
     private void initBehavior() {
-        mHeaderBehavior = (HeaderBehavior) ((CoordinatorLayout.LayoutParams) findViewById(R.id.headerPart).getLayoutParams()).getBehavior();
-        mHeaderBehavior.setPagerStateListener(new HeaderBehavior.OnPagerStateListener() {
-            @Override
-            public void onPagerClosed() {
-                mHeaderBehavior.resetLastScrollY(mHeaderBehavior.getHeaderOffsetRange());
+        mHeaderBehavior = (MisesHeaderBehavior) ((CoordinatorLayout.LayoutParams) findViewById(R.id.headerPart).getLayoutParams()).getBehavior();
+        if (mHeaderBehavior != null) {
 
-            }
 
-            @Override
-            public void onScrollChange(boolean isUp, int dy, int type) {
-                int absDy = Math.abs(dy);
-               /* int bannerAlpha = mBannerOffset - absDy;
-                if (bannerAlpha > 0) {
-                    mHomeBannerView.setAlpha(1.0f * bannerAlpha / mBannerOffset);
-                    mWeatherView.setAlpha(1.0f * bannerAlpha / mBannerOffset);
-                } else {
-                    mHomeBannerView.setAlpha(0.0f);
-                    mWeatherView.setAlpha(0.0f);
+            mHeaderBehavior.setPagerStateListener(new MisesHeaderBehavior.OnPagerStateListener() {
+                @Override
+                public void onPagerClosed() {
+                    mHeaderBehavior.resetLastScrollY(mHeaderBehavior.getHeaderOffsetRange());
                 }
 
-                int websiteAlpha = absDy - mBannerOffset;
-                if (websiteAlpha > 0 && websiteAlpha <= mWebsiteOffset) {
-                    mWebsiteView.setAlpha(1.0f - 1.0f * websiteAlpha / mWebsiteOffset);
-                } else if (websiteAlpha > 0) {
-                    mWebsiteView.setAlpha(0.0f);
-                }*/
-            }
-
-            @Override
-            public void onPagerOpened() {
-                mHeaderBehavior.resetLastScrollY(0);
-
-            }
-
-            @Override
-            public void onStopScroll(int dy, int type, boolean fling) {
-                int absY = Math.abs(dy);
-                int offset = Math.abs(mHeaderBehavior.getHeaderOffsetRange());
-                if (absY <= 0 || absY >= offset) {
-                    return;
-                }
-
-               /* if (fling) {
-                    if (type == ViewCompat.TYPE_NON_TOUCH) {
-                        setNewsExpand(absY > mBannerOffset);
+                @Override
+                public void onScrollChange(boolean isUp, int dy, int type) {
+                    int absDy = Math.abs(dy);
+                    // 计算 header 滚动的偏移量
+                    int headerOffset = mHeaderHeight - mContentOffset - absDy;
+                    float gradientImgAlpha;// 默认0-1范围的值
+                    int statusBarAlpha = 0;// 转换成0-255范围的值
+                    // 计算背景的透明度
+                    if (headerOffset > 0) {
+                        gradientImgAlpha = 1.0f * headerOffset / mHeaderHeight;
+                        statusBarAlpha = (int) (gradientImgAlpha * 255);
+                        mGradientBgIV.setAlpha(gradientImgAlpha);
+                    } else {
+                        mGradientBgIV.setAlpha(0.0f);
                     }
-                } else {
-                    setNewsExpand(absY > mBannerOffset);
-                }*/
-            }
-        });
-        // 设置为 header height 的相反数
-        mHeaderBehavior.setHeaderOffsetRange(-(mHeaderHeight - mContentOffset));
-        // 设置 header close 的时候是否能够通过滑动打开
-        mHeaderBehavior.setCouldScroollOpen(false);
-        mContentBehavior = (ContentBehavior) ((CoordinatorLayout.LayoutParams) findViewById(R.id.contentPart).getLayoutParams()).getBehavior();
-        // 设置依赖于哪一个 id，这里要设置为 Header layout id
-        mContentBehavior.setDependsLayoutId(R.id.headerPart);
-        // 设置 content 部分最终停留的位置
-        mContentBehavior.setFinalY(mContentOffset);
+                    // 计算状态栏透明度
+                    if (mMainCoordinator != null) {
+                        Log.i("mises_log", "mMainCoordinator is not Null, alphaValue = " + statusBarAlpha);
+                        mMainCoordinator.getBackground().setAlpha(statusBarAlpha);
+                        if (getContext() != null && getContext() instanceof Activity) {
+                            if (statusBarAlpha < 0.5) {
+                                MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_LIGHT);
+                            } else {
+                                MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_DARK);
+                            }
+                        }
+                    }
+
+                    // 计算名站的透明度
+                    int websiteOffset = absDy - mToolbarOffset;
+                    Log.i("mises_log", "ddddd--websiteOffset=" + websiteOffset);
+                    if (websiteOffset > 0 && websiteOffset <= mTopSiteOffset) {
+                        Log.i("mises_log", "ddddd--1111=" + (1.0f - 1.0f * websiteOffset / mTopSiteOffset));
+                        mTopSiteView.setAlpha(1.0f - 1.0f * websiteOffset / mTopSiteOffset);
+                    } else if (websiteOffset > 0) {
+                        Log.i("mises_log", "ddddd--2222=0.0");
+                        mTopSiteView.setAlpha(0.0f);
+                    } else {
+                        if (!mHeaderBehavior.isClosed()) {
+                            Log.i("mises_log", "ddddd--7777=0.0");
+                            mTopSiteView.setAlpha(1f);
+                        }
+                    }
+                    // 计算钱包入口的透明度
+                    int walletEntranceOffset = absDy - (mToolbarOffset + mSearchBoxHeight);
+                    Log.i("mises_log", "ddddd--walletEntranceOffset=" + walletEntranceOffset);
+                    if (walletEntranceOffset > 0 && walletEntranceOffset <= mTopSiteOffset) {
+                        Log.i("mises_log", "ddddd--4444=" + (1.0f - 1.0f * walletEntranceOffset / mTopSiteOffset));
+                        mWalletEntranceView.setAlpha(1.0f - 1.0f * walletEntranceOffset / mTopSiteOffset);
+                    } else if (walletEntranceOffset > 0) {
+                        Log.i("mises_log", "ddddd--5555=0.0");
+                        mWalletEntranceView.setAlpha(0.0f);
+                    } else {
+                        if (!mHeaderBehavior.isClosed()) {
+                            Log.i("mises_log", "ddddd--66666=0.0");
+                            mWalletEntranceView.setAlpha(1f);
+                        }
+                    }
+                }
+
+                @Override
+                public void onPagerOpened() {
+                    mHeaderBehavior.resetLastScrollY(0);
+                }
+
+                @Override
+                public void onStopScroll(int dy, int type, boolean fling) {
+                    int absY = Math.abs(dy);
+                    int offset = Math.abs(mHeaderBehavior.getHeaderOffsetRange());
+                    Log.i("mises_log", "onStopScroll");
+                    if (absY <= 0 || absY >= offset) {
+                        return;
+                    }
+                    // 计算钱包入口视图的位置
+                    int walletEntranceOffset = mToolbarOffset + mSearchBoxHeight;
+                    Log.i("mises_log", "MisesHomePageView scroll, absDy = " + absY + ", walletEntranceOffset = " + walletEntranceOffset);
+                    if (fling) {
+                        if (type == ViewCompat.TYPE_NON_TOUCH) {
+                            setNewsExpand(absY > walletEntranceOffset);
+                        }
+                    } else {
+                        setNewsExpand(absY > walletEntranceOffset);
+                    }
+                }
+            });
+            // 设置为 header height 的相反数
+            mHeaderBehavior.setHeaderOffsetRange(-(mHeaderHeight - mContentOffset));
+            // 设置 header close 的时候是否能够通过滑动打开
+            mHeaderBehavior.setCouldScrollOpen(true);
+        }
+        MisesContentBehavior mContentBehavior = (MisesContentBehavior) ((CoordinatorLayout.LayoutParams) findViewById(R.id.contentPart).getLayoutParams()).getBehavior();
+        if (mContentBehavior != null) {
+            // 设置依赖于哪一个 id，这里要设置为 Header layout id
+            mContentBehavior.setDependsLayoutId(R.id.headerPart);
+            // 设置 content 部分最终停留的位置
+            mContentBehavior.setFinalY(mContentOffset);
+        }
     }
 
     private void initView() {
-//        mToolbarPlace = findViewById(R.id.toolBarPlace);
         mGradientBgIV = findViewById(R.id.gradientBg);
         mMisesSearchBox = findViewById(R.id.mises_search_box_layout);
-        mSearchBox = findViewById(R.id.mises_search_box_place);
-        mWalletBtnRoot = findViewById(R.id.walletBtnRoot);
-        mMisesSearchBoxText = findViewById(R.id.mises_search_box_text);
+        mToolbarView = findViewById(R.id.mises_hp_toolbar);
+        mSearchBoxView = findViewById(R.id.mises_search_box_view);
+        mWalletEntranceView = findViewById(R.id.mises_wallet_entrance_view);
         mTopSiteView = findViewById(R.id.topSiteView);
         mMisesSearchBox.setOnClickListener(this);
-        mSearchBox.setOnClickListener(this);
-        mWalletBtnRoot.setOnClickListener(this);
-        mMisesSearchBoxText.setOnClickListener(this);
+        mSearchBoxView.setOnClickListener(this);
+        mWalletEntranceView.setOnClickListener(this);
         mTabLayout = findViewById(R.id.tabLayout);
         mViewPager = findViewById(R.id.viewPager);
-//        mAppBarLayout = findViewById(R.id.appbarLayout);
 
-        if (getContext() != null && getContext() instanceof Activity){
+        if (getContext() != null && getContext() instanceof Activity) {
             Activity activity = (Activity) getContext();
             mMainCoordinator = activity.findViewById(R.id.coordinator);
             Log.i("mises_log", "mMainCoordinator is null ?= " + (mMainCoordinator == null));
@@ -260,7 +298,7 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
                 @NonNull
                 @Override
                 public Fragment createFragment(int position) {
-                    Fragment fragment = null;
+                    Fragment fragment;
                     String cat = mCategories.get(position);
                     if (getResources().getString(R.string.mises_category_market).equals(cat)) {
                         fragment = MisesCryptoFragment.newInstance();
@@ -303,20 +341,17 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
     }
 
     private void initTabLayout() {
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(mTabLayout, mViewPager, true, new TabLayoutMediator.TabConfigurationStrategy() {
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                View view = LayoutInflater.from(getContext())
-                        .inflate(R.layout.mises_tab_view, MisesHomePageView.this, false);
-                AppCompatTextView textView = view.findViewById(R.id.tab_text);
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(mTabLayout, mViewPager, true, (tab, position) -> {
+            View view = LayoutInflater.from(getContext())
+                    .inflate(R.layout.mises_tab_view, MisesHomePageView.this, false);
+            AppCompatTextView textView = view.findViewById(R.id.tab_text);
 //                textView.setText(mNewsCategories.get(position).getTitle());
-                textView.setText(mCategories.get(position));
-                tab.setCustomView(textView);
-                if (position == 0) {
-                    setTabItemTexParams(textView, R.color.mises_tab_selected);
-                } else {
-                    setTabItemTexParams(textView, R.color.mises_tab_unselected);
-                }
+            textView.setText(mCategories.get(position));
+            tab.setCustomView(textView);
+            if (position == 0) {
+                setTabItemTexParams(textView, R.color.mises_tab_selected);
+            } else {
+                setTabItemTexParams(textView, R.color.mises_tab_unselected);
             }
         });
         tabLayoutMediator.attach();
@@ -351,72 +386,31 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
         textView.setTextColor(ContextCompat.getColor(textView.getContext(), textColor));
     }
 
+    /**
+     * 更新tab选择器数量
+     */
+    private void updateTabCountVisuals(int tabCount){
+        if (mToolbarView != null){
+            mToolbarView.updateTabCountVisuals(tabCount);
+        }
+    }
+
     private void initListener() {
+        mToolbarView.setOnClickListener(v -> {
+            int vId = v.getId();
+            if (vId == R.id.mises_menu_button) {
+
+            } else if (vId == R.id.mises_air_drop) {
+                if (mNewsClickListener != null) {
+                    mNewsClickListener.onClick(MisesConstants.MISES_AIR_DROP);
+                }
+            }
+        });
         mTopSiteView.setOnWebsiteClickListener(misesTopSiteModel -> {
             if (mNewsClickListener != null) {
                 mNewsClickListener.onClick(misesTopSiteModel.getUrl());
             }
         });
-//        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-//            int fiftySix = MisesDensityUtil.dip2px(getContext(), 56);// 固定占位高度
-//            int fortySix = MisesDensityUtil.dip2px(getContext(), 46);// 搜索框高度
-//
-//            // 根据appbarLayout滑动的距离设置图片背景是否透明
-//            // 最大可滑动距离
-//            int maxScrollHeight = mAppBarLayout.getTotalScrollRange() - fiftySix;
-//            Log.i("mises_log", "maxScrollHeight=" + maxScrollHeight);
-//            float gradientImgAlpha = 1 - (float) Math.abs(verticalOffset) / (maxScrollHeight + fiftySix);
-//            gradientImgAlpha = Math.max(0, Math.min(gradientImgAlpha, 1));
-//            mGradientBgIV.setAlpha(gradientImgAlpha);
-//            if (mMainCoordinator != null){
-//                int alphaValue = (int) (gradientImgAlpha * 255);
-//                Log.i("mises_log", "mMainCoordinator is not Null, alphaValue = "+ alphaValue);
-//                mMainCoordinator.getBackground().setAlpha(alphaValue);
-//                if (getContext() != null && getContext() instanceof Activity){
-//                    if (alphaValue < 0.5){
-//                        MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_LIGHT);
-//                    }else{
-//                        MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_DARK);
-//                    }
-//                }
-//            }
-//
-//            int startScrollThreshold = fiftySix + fortySix;
-//            int offScreenViewHeight = mMisesSearchBox.getHeight();// 留下的搜索框高度
-//
-//            // 滑动偏移值为正数
-//            int absoluteOffset = Math.abs(verticalOffset);
-//            // 如果滑动到指定位置则开始将mMisesSearchBox从顶部往下移动
-//            if (absoluteOffset >= startScrollThreshold) {
-//                mMisesSearchBox.setVisibility(VISIBLE);
-//                // 剩余滑动距离
-//                int remainingScroll = maxScrollHeight - absoluteOffset ;
-//                // 剩余比例
-//                float remainingScrollRatio = coerceIn((float) remainingScroll / (maxScrollHeight - startScrollThreshold ), 0f, 1f);
-//                // 动态调整屏幕外 View 的滑动位置
-//                float translationY = offScreenViewHeight * (1 - remainingScrollRatio);
-//                float ty = -offScreenViewHeight + translationY;
-//                mMisesSearchBox.setTranslationY(ty);
-//
-//                float gradientToolbarAlpha = 1 - remainingScrollRatio;
-//                Log.i("mises_log", "remainingScroll="+remainingScroll+", translationY="+translationY+", ty="+ty+", gradientToolbarAlpha = "+ gradientToolbarAlpha+", maxScrollHeight="+maxScrollHeight+", absoluteOffset="+absoluteOffset+", fifitySix="+fiftySix+", fourtySix="+fortySix);
-////                mToolbarPlace.setAlpha(gradientToolbarAlpha);
-//                mWalletBtnRoot.setAlpha(remainingScrollRatio);
-//            } else {
-//                Log.i("mises_log","translationY="+-offScreenViewHeight);
-//                mMisesSearchBox.setTranslationY(-offScreenViewHeight);
-//                mMisesSearchBox.setVisibility(GONE);
-////                mToolbarPlace.setAlpha(0);
-//                mWalletBtnRoot.setAlpha(1);
-//            }
-//
-//
-//
-//            // 设置滑动距离回调
-//            /*if (mExpandListener != null) {
-//                mExpandListener.onOffsetChanged(appBarLayout, verticalOffset);
-//            }*/
-//        });
     }
 
     public static float coerceIn(float value, float min, float max) {
@@ -499,9 +493,33 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (getContext() != null && getContext() instanceof Activity){
+        if (getContext() != null && getContext() instanceof Activity) {
             Activity activity = (Activity) getContext();
             mMainCoordinator = activity.findViewById(R.id.coordinator);
+        }
+    }
+
+    public void setNewsExpand(boolean expend) {
+        if (expend) {
+            mHeaderBehavior.closePager();
+            Log.i("mises_log", "set news expand : close");
+            MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_LIGHT);
+            mGradientBgIV.setAlpha(0f);
+            mTopSiteView.setAlpha(0f);
+            mWalletEntranceView.setAlpha(0f);
+            if (mMainCoordinator != null) {
+                mMainCoordinator.getBackground().setAlpha(0);
+            }
+        } else {
+            mHeaderBehavior.openPager();
+            Log.i("mises_log", "set news expand : openPager");
+            MisesStatusBarUtil.setSystemUiStatusBarFontColor((Activity) getContext(), MisesStatusBarUtil.MisesSystemTheme.THEME_DARK);
+            mGradientBgIV.setAlpha(1f);
+            mTopSiteView.setAlpha(1f);
+            mWalletEntranceView.setAlpha(1f);
+            if (mMainCoordinator != null) {
+                mMainCoordinator.getBackground().setAlpha(255);
+            }
         }
     }
 
@@ -543,13 +561,20 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
         mFavoriteCoinProvider = provider;
     }
 
+    public void setOnTabSelectorProvider(MisesTabSelectorProvider provider){
+        mTabSelectorProvider = provider;
+        if (mTabSelectorProvider != null){
+            updateTabCountVisuals(mTabSelectorProvider.getTabCount());
+        }
+    }
+
     @Override
     public void onClick(View v) {
-        if (v == mMisesSearchBox || v == mMisesSearchBoxText || v == mSearchBox) {
+        if (v == mMisesSearchBox || v == mSearchBoxView) {
             if (mMisesNtpListener != null) {
                 mMisesNtpListener.focusSearchBox();
             }
-        } else if (v == mWalletBtnRoot) {
+        } else if (v == mWalletEntranceView) {
             if (mMisesNtpListener != null) {
                 mMisesNtpListener.launchWallet();
             }

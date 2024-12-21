@@ -501,6 +501,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                    });
                 }
                 if (controlContainerLayoutId != NO_CONTROL_CONTAINER) {
+                    // 加载toolbar视图的控制容器
                     ViewStub toolbarContainerStub =
                             ((ViewStub) findViewById(R.id.control_container_stub));
                     toolbarContainerStub.setLayoutResource(controlContainerLayoutId);
@@ -511,6 +512,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                 ControlContainer controlContainer =
                         (ControlContainer) findViewById(R.id.control_container);
                 // Inflate the correct toolbar layout for the device.
+                // 获取toolbar的xml布局
                 int toolbarLayoutId = getToolbarLayoutId();
                 if (toolbarLayoutId != NO_TOOLBAR_LAYOUT && controlContainer != null) {
                     Log.i("kiwi_log","ChromeActivity-setContentView-start init with toolbar.");

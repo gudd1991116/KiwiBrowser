@@ -38,8 +38,10 @@ import org.chromium.chrome.browser.ntp.ntp_hp.MisesHomePageView;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnExpandListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNewsClickListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNtpListener;
+import org.chromium.chrome.browser.ntp.ntp_hp.provider.MisesTabSelectorProvider;
 import org.chromium.chrome.browser.tabmodel.TabCreatorManager;
 import org.chromium.chrome.browser.tabmodel.TabModel;
+import org.chromium.chrome.browser.tabmodel.TabModelSelector;
 import org.chromium.chrome.browser.widget.TextViewWithCompoundDrawables;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeFeatureList;
@@ -84,7 +86,7 @@ import io.horizontalsystems.bankwallet.modules.launcher.LaunchModule;
  * View that displays the page.
  */
 public class NewTabPageView
-        extends FrameLayout implements TileGroup.Observer, VrShellDelegate.VrModeObserver {
+        extends FrameLayout implements TileGroup.Observer, VrShellDelegate.VrModeObserver , MisesTabSelectorProvider {
     private static final String TAG = "NewTabPageView";
 
     private static final long SNAP_SCROLL_DELAY_MS = 30;
@@ -117,6 +119,7 @@ public class NewTabPageView
     private Runnable mSnapScrollRunnable;
     private Runnable mUpdateSearchBoxOnScrollRunnable;
 
+    private TabModelSelector mTabModelSelector;
     private TabCreatorManager.TabCreator mTabCreator;
 
     /**
@@ -164,6 +167,17 @@ public class NewTabPageView
     public static boolean isSimplifiedNtpAblationEnabled() {
         return ChromeFeatureList.getFieldTrialParamByFeatureAsBoolean(
                 ChromeFeatureList.SIMPLIFIED_NTP, PARAM_SIMPLIFIED_NTP_ABLATION, false);
+    }
+
+    /**
+     * @return Multiple tab count.
+     */
+    @Override
+    public int getTabCount() {
+        if (mTabModelSelector != null){
+            return mTabModelSelector.getModel(false).getCount();
+        }
+        return 1;
     }
 
     /**
@@ -215,11 +229,12 @@ public class NewTabPageView
      * @param scrollPosition The adapter scroll position to initialize to.
      */
     public void initialize(NewTabPageManager manager, Activity activity, Tab tab, TileGroup.Delegate tileGroupDelegate,
-                           boolean searchProviderHasLogo, boolean searchProviderIsGoogle, int scrollPosition) {
+                           boolean searchProviderHasLogo, boolean searchProviderIsGoogle, int scrollPosition, TabModelSelector tabModelSelector) {
         TraceEvent.begin(TAG + ".initialize()");
         mActivity = activity;
         mTab = tab;
         mManager = manager;
+        mTabModelSelector = tabModelSelector;
         mUiConfig = new UiConfig(this);
 
         if (mActivity instanceof TabCreatorManager) {
@@ -234,6 +249,7 @@ public class NewTabPageView
         mRecyclerView.setContainsLocationBar(manager.isLocationBarShownInNTP());
 //        addView(mRecyclerView);
         MisesHomePageView homePageView = new MisesHomePageView(getContext());
+        homePageView.setOnTabSelectorProvider(this);
         homePageView.setOnNewsClickListener(new MisesOnNewsClickListener() {
             @Override
             public void onClick(String link) {
@@ -294,6 +310,11 @@ public class NewTabPageView
             @Override
             public void launchWallet() {
                 LaunchModule.INSTANCE.start(getContext());
+            }
+
+            @Override
+            public void showAppMenu() {
+
             }
 
         });

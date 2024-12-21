@@ -4,5 +4,11 @@
     <dimen name="mises_search_box_height">56dp</dimen>
     <dimen name="mises_toolbar_button_width">32dp</dimen>
     <dimen name="mises_toolbar_button_height">48dp</dimen>
-    <dimen name="mises_header_total_height">276dp</dimen>
+    <dimen name="mises_homepage_header_total_height">276dp</dimen>
+    <dimen name="mises_homepage_top_sites_height">80dp</dimen>
+    <dimen name="mises_homepage_wallet_entrance_height">84dp</dimen>
+
+    <dimen name="mises_toolbar_tab_count_text_size_1_digit">12dp</dimen>
+    <dimen name="mises_toolbar_tab_count_text_size_2_digit">10dp</dimen>
+    <dimen name="mises_toolbar_tab_count_text_size_3_digit">8dp</dimen>
 </resources>

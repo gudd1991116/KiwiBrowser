@@ -20,6 +20,14 @@
     <color name="black_4d4d4d">#4d4d4d</color>
     <color name="black_666666">#666666</color>
 
+    <color name="mises_default_icon_color">#3C4043</color>
+
+    <!-- New list of common text colors -->
+    <color name="mises_black_alpha_20">#33000000</color>
+    <color name="mises_black_alpha_24">#3D000000</color>
+    <color name="mises_black_alpha_30">#4D000000</color>
+    <color name="mises_black_alpha_40">#66000000</color>
+
     <color name="mises_tab_selected">#685FF5</color>
     <color name="mises_tab_unselected">#666666</color>
     <color name="mises_color_text_normal">@color/black_232728</color>

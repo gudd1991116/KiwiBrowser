@@ -11,17 +11,17 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
  * <p>
  * Behavior will automatically sets up a {@link android.support.design.widget.ViewOffsetHelper} on a {@link View}.
  */
-public class ViewOffsetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
+public class MisesViewOffsetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
-    private ViewOffsetHelper mViewOffsetHelper;
+    private MisesViewOffsetHelper mViewOffsetHelper;
 
     private int mTempTopBottomOffset = 0;
     private int mTempLeftRightOffset = 0;
 
-    public ViewOffsetBehavior() {
+    public MisesViewOffsetBehavior() {
     }
 
-    public ViewOffsetBehavior(Context context, AttributeSet attrs) {
+    public MisesViewOffsetBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -31,7 +31,7 @@ public class ViewOffsetBehavior<V extends View> extends CoordinatorLayout.Behavi
         layoutChild(parent, child, layoutDirection);
 
         if (mViewOffsetHelper == null) {
-            mViewOffsetHelper = new ViewOffsetHelper(child);
+            mViewOffsetHelper = new MisesViewOffsetHelper(child);
         }
         mViewOffsetHelper.onViewLayout();
 

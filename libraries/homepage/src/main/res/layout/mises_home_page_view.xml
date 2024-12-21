@@ -12,56 +12,42 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/gradientBg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="320dp"
         android:background="@mipmap/mises_gradient_bg" />
 
     <!--partOfHeader-->
+
     <LinearLayout
         android:id="@+id/headerPart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_behavior="@string/mises_behavior_header">
+        app:layout_behavior="@string/mises_behavior_header"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!--<include layout="@layout/mises_search_box_layout" />-->
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <org.chromium.chrome.browser.ntp.ntp_hp.view.toolbar.MisesToolbarView
+            android:id="@+id/mises_hp_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:gravity="end|center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/mises_tool_bar_height" />
 
-            <ImageButton
-                android:id="@+id/mises_menu_button"
-                style="@style/MisesToolbarButton"
-                android:src="@mipmap/mises_ic_more_vert_black_24dp"
-                app:tint="@android:color/white" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <View
             android:id="@+id/mises_search_box_place"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/mises_search_box_height"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/mises_search_box_bg">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginEnd="20dp" />
 
         <org.chromium.chrome.browser.ntp.ntp_hp.view.topsite.MisesHorizontalTopsiteView
             android:id="@+id/topSiteView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <include
-            layout="@layout/mises_homepage_wallet_entrance_btn"
+        <org.chromium.chrome.browser.ntp.ntp_hp.view.MisesWalletEntranceView
+            android:id="@+id/mises_wallet_entrance_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp" />
-
+            android:layout_marginEnd="20dp" />
     </LinearLayout>
 
     <!--partOfSearchBox-->
@@ -71,46 +57,12 @@
         android:layout_height="56dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:translationY="-56dp"
-        android:visibility="gone"
         app:layout_behavior="@string/mises_behavior_search">
 
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <org.chromium.chrome.browser.ntp.ntp_hp.view.MisesSearchBoxView
+            android:id="@+id/mises_search_box_view"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:background="@drawable/mises_search_box_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/searchIcon"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="15dp"
-                android:src="@mipmap/mises_icon_search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/mises_search_box_text"
-                android:layout_width="0dp"
-                android:layout_height="46dp"
-                android:layout_marginStart="11dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:gravity="center_vertical"
-                android:text="Search"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/searchIcon"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            android:layout_height="match_parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

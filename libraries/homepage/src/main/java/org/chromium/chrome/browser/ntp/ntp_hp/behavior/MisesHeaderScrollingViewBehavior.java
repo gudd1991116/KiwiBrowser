@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by jun xu on 19-3-4.
  */
-public abstract class HeaderScrollingViewBehavior extends ViewOffsetBehavior<View> {
+public abstract class MisesHeaderScrollingViewBehavior extends MisesViewOffsetBehavior<View> {
 
     private final Rect mTempRect1 = new Rect();
     private final Rect mTempRect2 = new Rect();
@@ -24,10 +24,10 @@ public abstract class HeaderScrollingViewBehavior extends ViewOffsetBehavior<Vie
     private int mVerticalLayoutGap = 0;
     private int mOverlayTop;
 
-    public HeaderScrollingViewBehavior() {
+    public MisesHeaderScrollingViewBehavior() {
     }
 
-    public HeaderScrollingViewBehavior(Context context, AttributeSet attrs) {
+    public MisesHeaderScrollingViewBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

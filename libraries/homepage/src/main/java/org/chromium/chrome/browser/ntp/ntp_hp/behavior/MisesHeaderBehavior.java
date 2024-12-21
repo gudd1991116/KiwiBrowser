@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
 /**
  * Created by jun xu on 19-3-4
  */
-public class HeaderBehavior extends ViewOffsetBehavior {
+public class MisesHeaderBehavior extends MisesViewOffsetBehavior {
 
     public static final int DURATION_SHORT = 300;
     public static final int DURATION_LONG = 600;
@@ -29,7 +29,7 @@ public class HeaderBehavior extends ViewOffsetBehavior {
     private WeakReference<View> mChild;
 
     private OnPagerStateListener mPagerStateListener;
-    HeaderFlingRunnable.OnHeaderFlingListener mOnHeaderFlingListener;
+    MisesHeaderFlingRunnable.OnHeaderFlingListener mOnHeaderFlingListener;
 
     private float mLastY;
     private int mOffestY;
@@ -38,7 +38,7 @@ public class HeaderBehavior extends ViewOffsetBehavior {
     private int mHeaderOffsetRange;
     private Context mContext;
     private int mTouchSlop;
-    private HeaderFlingRunnable mFlingRunnableHeader;
+    private MisesHeaderFlingRunnable mFlingRunnableHeader;
 
     private boolean mIsFling;
     private int mMinimumFlingVelocity;
@@ -48,21 +48,21 @@ public class HeaderBehavior extends ViewOffsetBehavior {
     private int mLastScrollY = 0;
     private boolean mScrollFling = false;
 
-    public HeaderBehavior() {
+    public MisesHeaderBehavior() {
         init();
     }
 
-    public HeaderBehavior(Context context, AttributeSet attrs) {
+    public MisesHeaderBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
     }
 
-    public void setCouldScroollOpen(boolean couldScroollOpen) {
-        mCouldScroollOpen = couldScroollOpen;
+    public void setCouldScrollOpen(boolean couldScrollOpen) {
+        mCouldScroollOpen = couldScrollOpen;
     }
 
-    public void setOnHeaderFlingListener(HeaderFlingRunnable.OnHeaderFlingListener onHeaderFlingListener) {
+    public void setOnHeaderFlingListener(MisesHeaderFlingRunnable.OnHeaderFlingListener onHeaderFlingListener) {
         mOnHeaderFlingListener = onHeaderFlingListener;
     }
 
@@ -70,6 +70,10 @@ public class HeaderBehavior extends ViewOffsetBehavior {
         mPagerStateListener = pagerStateListener;
     }
 
+    /**
+     * 定义该头部视图的滑动范围，定义滑动的最小值（负值）和最大值（通常是0）。
+     * @param offsetRange
+     */
     public void setHeaderOffsetRange(int offsetRange) {
         mHeaderOffsetRange = offsetRange;
     }
@@ -103,8 +107,7 @@ public class HeaderBehavior extends ViewOffsetBehavior {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(CoordinatorLayout parent, final View child, MotionEvent
-            ev) {
+    public boolean onInterceptTouchEvent(CoordinatorLayout parent, final View child, MotionEvent ev) {
 
         boolean closed = isClosed();
 
@@ -215,18 +218,14 @@ public class HeaderBehavior extends ViewOffsetBehavior {
             return true;
         }
 
-        if (mIsUp) {
-            return false;
-        } else {
-            return false;
-        }
+        return false;
 
     }
 
     private void tryToInitFlingRunnable(@NonNull final CoordinatorLayout coordinatorLayout, @NonNull View child) {
         if (mFlingRunnableHeader == null) {
-            mFlingRunnableHeader = new HeaderFlingRunnable(coordinatorLayout, child);
-            mFlingRunnableHeader.setOnScrollChangeListener(new HeaderFlingRunnable.OnHeaderFlingListener() {
+            mFlingRunnableHeader = new MisesHeaderFlingRunnable(coordinatorLayout, child);
+            mFlingRunnableHeader.setOnScrollChangeListener(new MisesHeaderFlingRunnable.OnHeaderFlingListener() {
 
                 @Override
                 public void onFlingFinish() {
@@ -274,7 +273,7 @@ public class HeaderBehavior extends ViewOffsetBehavior {
     }
 
     private boolean isHeaderFling(@NonNull View target) {
-        return target instanceof NestedLinearLayout;
+        return target instanceof MisesNestedLinearLayout;
     }
 
     @Override

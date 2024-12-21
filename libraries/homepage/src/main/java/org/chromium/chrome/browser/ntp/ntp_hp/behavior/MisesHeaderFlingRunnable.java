@@ -9,7 +9,7 @@ import androidx.core.view.ViewCompat;
 /**
  * Created by jun xu on 19-3-7.
  */
-public class HeaderFlingRunnable implements Runnable {
+public class MisesHeaderFlingRunnable implements Runnable {
 
     private final View mChild;
     private final CoordinatorLayout mParent;
@@ -19,7 +19,7 @@ public class HeaderFlingRunnable implements Runnable {
     OnHeaderFlingListener mOnScrollChangeListener;
     private boolean mIsScroollClose;
 
-    public HeaderFlingRunnable(CoordinatorLayout parent, View child) {
+    public MisesHeaderFlingRunnable(CoordinatorLayout parent, View child) {
         mParent = parent;
         mChild = child;
         mOverScroller = new OverScroller(mChild.getContext());

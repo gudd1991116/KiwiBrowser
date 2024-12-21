@@ -17,7 +17,7 @@ import androidx.core.view.ViewCompat;
  * Also the setting of absolute offsets (similar to translationX/Y), rather than additive
  * offsets.
  */
-public class ViewOffsetHelper {
+public class MisesViewOffsetHelper {
 
     private final View mView;
 
@@ -26,7 +26,7 @@ public class ViewOffsetHelper {
     private int mOffsetTop;
     private int mOffsetLeft;
 
-    public ViewOffsetHelper(View view) {
+    public MisesViewOffsetHelper(View view) {
         mView = view;
     }
 
@@ -60,7 +60,7 @@ public class ViewOffsetHelper {
     }
 
     /**
-     * Set the top and bottom offset for this {@link ViewOffsetHelper}'s view.
+     * Set the top and bottom offset for this {@link MisesViewOffsetHelper}'s view.
      *
      * @param offset the offset in px.
      * @return true if the offset has changed
@@ -75,7 +75,7 @@ public class ViewOffsetHelper {
     }
 
     /**
-     * Set the left and right offset for this {@link ViewOffsetHelper}'s view.
+     * Set the left and right offset for this {@link MisesViewOffsetHelper}'s view.
      *
      * @param offset the offset in px.
      * @return true if the offset has changed

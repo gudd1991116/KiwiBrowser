@@ -3,13 +3,11 @@ package org.chromium.chrome.browser.ntp.ntp_hp.behavior;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import org.chromium.chrome.browser.R;
-import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesDensityUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -17,20 +15,20 @@ import java.lang.ref.WeakReference;
 /**
  * 主要是通过 transY 来控制位置的
  */
-public class SearchBehavior extends CoordinatorLayout.Behavior<View> {
+public class MisesSearchBehavior extends CoordinatorLayout.Behavior<View> {
 
     private WeakReference<View> dependentView;
     private long mLastTime;
     private boolean first = true;
 
     private Context mContext;
-    private int mStatusBarHeight;
+    private int mStatusBarHeight = 0;
     private int mSearchViewMarginTop;
 
-    public SearchBehavior(Context context, AttributeSet attrs) {
+    public MisesSearchBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        mStatusBarHeight = MisesDensityUtil.statusBarHeight(context);
+//        mStatusBarHeight = MisesDensityUtil.statusBarHeight(context);
         mSearchViewMarginTop = mContext.getResources().getDimensionPixelOffset(R.dimen.mises_tool_bar_height) + mStatusBarHeight;
     }
 

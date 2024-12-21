@@ -39,6 +39,7 @@ import retrofit2.Response;
 
 /**
  * Created by gudd on 2024/12/10.
+ * total height 80dp
  */
 public class MisesHorizontalTopsiteView extends LinearLayout implements MisesPagerGridLayoutManager.PagerChangedListener {
     private final static String DEF_ICON_URL = "https://service.bosebrowser.com/img/web3.png";
