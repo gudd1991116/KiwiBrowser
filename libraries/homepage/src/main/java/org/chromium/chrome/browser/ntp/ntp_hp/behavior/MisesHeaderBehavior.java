@@ -108,6 +108,9 @@ public class MisesHeaderBehavior extends MisesViewOffsetBehavior {
 
     @Override
     public boolean onInterceptTouchEvent(CoordinatorLayout parent, final View child, MotionEvent ev) {
+        if (mFlingRunnableHeader != null && mFlingRunnableHeader.isScrolling()){
+            return true;// 如果动画还没结束，则拦截滑动r
+        }
 
         boolean closed = isClosed();
 
@@ -140,6 +143,9 @@ public class MisesHeaderBehavior extends MisesViewOffsetBehavior {
     @Override
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
         //dy>0 scroll up;dy<0,scroll down
+        if (mFlingRunnableHeader != null && mFlingRunnableHeader.isScrolling()){
+            return ;// 如果动画还没结束，则拦截滑动r
+        }
         if (dy < 0) {
             return;
         }
@@ -183,6 +189,9 @@ public class MisesHeaderBehavior extends MisesViewOffsetBehavior {
 
     @Override
     public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
+        if (mFlingRunnableHeader != null && mFlingRunnableHeader.isScrolling()){
+            return ;// 如果动画还没结束，则拦截滑动r
+        }
         if (!mCouldScroollOpen) {
             if (isClosed(child)) {
                 return;
@@ -214,7 +223,7 @@ public class MisesHeaderBehavior extends MisesViewOffsetBehavior {
 //            handleActionUp(coordinatorLayout, child);
             tryToInitFlingRunnable(coordinatorLayout, child);
             mFlingRunnableHeader.setTarget(target);
-            mFlingRunnableHeader.startFling((int) (getHeaderOffsetRange() - child.getTranslationY()), velocityX, velocityY);
+            mFlingRunnableHeader.startFlingWithDelay((int) (getHeaderOffsetRange() - child.getTranslationY()), velocityX, velocityY);
             return true;
         }
 
@@ -225,6 +234,7 @@ public class MisesHeaderBehavior extends MisesViewOffsetBehavior {
     private void tryToInitFlingRunnable(@NonNull final CoordinatorLayout coordinatorLayout, @NonNull View child) {
         if (mFlingRunnableHeader == null) {
             mFlingRunnableHeader = new MisesHeaderFlingRunnable(coordinatorLayout, child);
+
             mFlingRunnableHeader.setOnScrollChangeListener(new MisesHeaderFlingRunnable.OnHeaderFlingListener() {
 
                 @Override
