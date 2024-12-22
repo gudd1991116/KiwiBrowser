@@ -85,8 +85,8 @@ public class MisesNewsFragment extends Fragment {
 
         mNewsAdapter = new MisesNewsFeedAdapter();
         mRecyclerView.setAdapter(mNewsAdapter);
-        getCategories();
         initListener();
+        getCategories();
     }
 
     private void getCategories() {
@@ -97,18 +97,25 @@ public class MisesNewsFragment extends Fragment {
                 // 将headline排序到第一位并过滤出非Currency的列表内容
                 String targetName = "headline";
                 List<MisesCategoryModel> collect = categories.stream().filter(misesCategoryModel ->
-                                !misesCategoryModel.getTitle().equals(MisesHomePageView.CRYPTO_DEFAULT)
+                                !misesCategoryModel.getTitle().equals(MisesHomePageView.CRYPTO_DEFAULT) && !misesCategoryModel.getTitle().toLowerCase().equals(targetName)
                         ).sorted((model1, model2) -> model1.getTitle().toLowerCase().equals(targetName) ? -1 : model2.getTitle().toLowerCase().equals(targetName) ? 1 : 0)
                         .collect(Collectors.toList());
+                Log.i("mises_log", "newsfragment filter and sorted data : " + new Gson().toJson(collect));
                 mCategoriesList.clear();
                 mCategoriesList.addAll(collect);
                 mNewsAdapter.setHeaderList(mCategoriesList);
 
                 if (mCategoriesList.get(0) != null) {
+                    Log.i("mises_log", "newsfragment categories find first data is not empty.");
                     MisesCategoryModel misesCategoryModel = mCategoriesList.get(0);
+                    Log.i("mises_log", "newsfragment first data is : " + new Gson().toJson(misesCategoryModel));
                     if (misesCategoryModel != null) {
                         mCategoryUrl = misesCategoryModel.getUrl();
-                        getData(mCategoryUrl, true);
+                        Log.i("mises_log","newsfragment categoryUrl is : "+ mCategoryUrl+" and start getData.");
+                        mRefreshLayout.post(() -> {
+                            mRefreshLayout.setRefreshing(true);
+                        });
+
                     }
                 }
             }
@@ -116,10 +123,13 @@ public class MisesNewsFragment extends Fragment {
     }
 
     private void getData(String mCategoryUrl, boolean isRefresh) {
+        Log.i("mises_log", "newsfragment start getdata.");
         if (isRefresh && !mRefreshLayout.isRefreshing()) {
+            Log.i("mises_log", "newsfragment showRefresh().");
             showRefresh();
         }
         if (TextUtils.isEmpty(mCategoryUrl)) {
+            Log.i("mises_log", "newsfragment mCategoryUrl is empty and hideRefresh.");
             hideRefresh();
             return;
         }
@@ -130,6 +140,7 @@ public class MisesNewsFragment extends Fragment {
         MisesUrlPropertyModel urlPropertyModel = new MisesUrlPropertyModel(mCategoryUrl, linkParamsKey);
         String api = urlPropertyModel.getFull_host();
         String fullPath = urlPropertyModel.getFull_path();
+        Log.i("mises_log", "newsfragment convertUrl-api=" + api + ",fullpath =" + fullPath);
 
         // 获取通用数据
         String cty = Locale.getDefault().getCountry();
@@ -138,7 +149,7 @@ public class MisesNewsFragment extends Fragment {
             cty = "US";
             lang = "en";
         }
-        int limit = 20;
+        int limit = 10;
         int offset = mOffset;
 
         Map<String, String> additionalParams = new HashMap<>();
@@ -150,12 +161,14 @@ public class MisesNewsFragment extends Fragment {
         additionalParams.put("limit", String.valueOf(limit));
         additionalParams.put("offset", String.valueOf(offset));
 
+        Log.i("mises_log", "newsfragment request params json is =" + new Gson().toJson(additionalParams));
         MisesRestInterface cusApiInterface = MisesNetworkHelper.getInstance().getInterface(api);
         Call<MisesNewsFeedModel> newsList = cusApiInterface.getNewsList(fullPath, additionalParams);
-
+        Log.i("mises_log", "newsfragment start enqueue.");
         newsList.enqueue(new Callback<MisesNewsFeedModel>() {
             @Override
             public void onResponse(@NonNull Call<MisesNewsFeedModel> call, @NonNull Response<MisesNewsFeedModel> response) {
+                Log.i("mises_log", "newsfragment onResponse.");
                 mRecyclerView.post(() -> {
                     hideRefresh();
                     if (response.isSuccessful()) {
@@ -183,6 +196,9 @@ public class MisesNewsFragment extends Fragment {
                         } else {
                             mNewsAdapter.hideFooter(); // 隐藏FooterView
                             mNewsAdapter.loadFinish();
+                            if (body != null && body.getAds() != null) {
+                                Log.i("mises_log","body.getAds() json:  "+ new Gson().toJson(body.getAds()));
+                            }
                             Log.i("mises_log","body != null : "+ (body != null)+", body.getAds() != null : "+(body.getAds() != null)+", body.getAds().isEmpty() : "+(body.getAds().isEmpty()));
                             Log.i("mises_log","mises news feed result empty.");
                             Toast.makeText(requireContext(), requireContext().getString(R.string.mises_no_result_found), Toast.LENGTH_SHORT).show();
@@ -224,10 +240,11 @@ public class MisesNewsFragment extends Fragment {
                         MisesNewsFeedAdapter.HeaderViewHolder headerView = mNewsAdapter.getHeaderView();
                         if (headerView != null) {
                             type = headerView.getSelectedChannelName().toLowerCase(Locale.US);
-                            if (TextUtils.equals(type,"crypto")){
+                           /* if (TextUtils.equals(type,"crypto")){
                                 type = "crypto1";
-                            }
+                            }*/
                         }
+                        linkHost.append("h5/").append(type).append("/");
                         if (TextUtils.equals(adsModel.getType(),"boseai-news")){
                             linkHost.append("detail2").append("?");
                         }else{
@@ -254,10 +271,7 @@ public class MisesNewsFragment extends Fragment {
             });
         }
 
-        mRefreshLayout.setOnRefreshListener(() -> {
-            mOffset = 0;
-            getData(mCategoryUrl, true);
-        });
+        mRefreshLayout.setOnRefreshListener(this::refreshData);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -276,7 +290,7 @@ public class MisesNewsFragment extends Fragment {
                         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
                         // 判断是否接近底部
-                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
+                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && !mRefreshLayout.isRefreshing()) {
                             // 显示Footer并加载更多数据
                             mNewsAdapter.showFooter();
                             Log.i("mises_log","guddd onScrolled....categoryUrl : " + mCategoryUrl);
@@ -286,6 +300,11 @@ public class MisesNewsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void refreshData() {
+        mOffset = 0;
+        getData(mCategoryUrl, true);
     }
 
     private void hideRefresh() {

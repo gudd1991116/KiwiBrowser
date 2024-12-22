@@ -189,6 +189,7 @@ public class MisesEventsFragment extends Fragment {
                 if (!data.isEmpty()) {
                     MisesNewsFeedModel.AdsModel adsModel = data.get(position);
                     StringBuilder linkHost = new StringBuilder("https://taitunews.com/");
+                    linkHost.append("h5/").append("crypto").append("/");
                     if (TextUtils.equals(adsModel.getType(), "boseai-news")) {
                         linkHost.append("detail2").append("?");
                     } else {
@@ -196,7 +197,7 @@ public class MisesEventsFragment extends Fragment {
                     }
                     linkHost.append("id=").append(adsModel.getId()).append("&")
                             .append("language=").append(adsModel.getLanguage()).append("&")
-                            .append("type=").append("crypto1");
+                            .append("type=").append("crypto");
                     Log.i("mises_log", "点击新闻链接：" + linkHost);
                     if (mOnNewsClickListener != null) {
                         mOnNewsClickListener.onClick(linkHost.toString());
