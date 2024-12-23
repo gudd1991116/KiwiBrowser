@@ -6,5 +6,6 @@ gradle/
 gradlew
 *.apk
 MigrateToAndroidX/
+*.idea
 
 /app/src/main/assets
