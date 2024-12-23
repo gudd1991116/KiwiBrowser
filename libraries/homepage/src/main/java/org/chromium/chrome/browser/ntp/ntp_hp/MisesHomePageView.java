@@ -34,7 +34,8 @@ import org.chromium.chrome.browser.R;
 import org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesContentBehavior;
 import org.chromium.chrome.browser.ntp.ntp_hp.behavior.MisesHeaderBehavior;
 import org.chromium.chrome.browser.ntp.ntp_hp.common.MisesConstants;
-import org.chromium.chrome.browser.ntp.ntp_hp.fragment.MisesDAPPFragment;
+import org.chromium.chrome.browser.ntp.ntp_hp.fragment.dapp.MisesDAPPFragment;
+import org.chromium.chrome.browser.ntp.ntp_hp.fragment.news.MisesNewsContainerFragment;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.news.MisesNewsFragment;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.currency.MisesCryptoFragment;
 import org.chromium.chrome.browser.ntp.ntp_hp.fragment.events.MisesEventsFragment;
@@ -133,6 +134,9 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
                 mTabCreator = tabCreatorManager.getTabCreator(false);
             }
         }*/
+        if (getContext() instanceof LifecycleOwner) {
+            ((LifecycleOwner) getContext()).getLifecycle().addObserver(this);
+        }
 
         initHeight();
         initBehavior();
@@ -151,6 +155,16 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
         mSearchBoxHeight = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_search_box_height);
         mHeaderHeight = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_homepage_header_total_height) + mStatusBarHeight;
         mContentOffset = getContext().getResources().getDimensionPixelOffset(R.dimen.mises_tool_bar_height) + mStatusBarHeight;
+    }
+
+    @Override
+    public void onResume(@NonNull LifecycleOwner owner) {
+        DefaultLifecycleObserver.super.onResume(owner);
+        Log.i("mises_log","MisesHomePageView onResume()");
+        if(mTabSelectorProvider != null){
+            Log.i("mises_log","MisesHomePageView onResume() mTabSelectorProvider != null");
+            updateTabCountVisuals(mTabSelectorProvider.getTabCount());
+        }
     }
 
     @Override
@@ -305,10 +319,12 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
                         ((MisesCryptoFragment) fragment).setOnItemClickListener(MisesHomePageView.this);
                         ((MisesCryptoFragment) fragment).setMisesFavoriteCoinListProvider(MisesHomePageView.this);
                     } else if (getResources().getString(R.string.mises_category_news).equals(cat)) {
-                        fragment = MisesNewsFragment.newInstance(mNewsCategories);
-                        ((MisesNewsFragment) fragment).setOnItemClickListener(MisesHomePageView.this);
+                        fragment = MisesNewsContainerFragment.newInstance(mNewsCategories);
+                        ((MisesNewsContainerFragment) fragment).setOnItemClickListener(MisesHomePageView.this);
                     } else if (getResources().getString(R.string.mises_category_dapp).equals(cat)) {
                         fragment = MisesDAPPFragment.newInstance();
+//                        fragment = MisesNewsFragment.newInstance(mNewsCategories);
+//                        ((MisesNewsFragment)fragment).setOnItemClickListener(MisesHomePageView.this);
                     } else /*if (getResources().getString(R.string.mises_category_events).equals(cat))*/ {
                         MisesCategoryModel categoryOfCrypto = new MisesCategoryModel(0, "Crypto", "https://innews.infohubnews.app/ad/mixnews?cty=CN&lang=zh&session=init&platform=web&c=crypto1&cc=test1&offset=0&limit=10&ts=17236873901&only_ai_news=true");
                         for (MisesCategoryModel categoryModel : mNewsCategories) {
@@ -396,16 +412,6 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
     }
 
     private void initListener() {
-        mToolbarView.setOnClickListener(v -> {
-            int vId = v.getId();
-            if (vId == R.id.mises_menu_button) {
-
-            } else if (vId == R.id.mises_air_drop) {
-                if (mNewsClickListener != null) {
-                    mNewsClickListener.onClick(MisesConstants.MISES_AIR_DROP);
-                }
-            }
-        });
         mTopSiteView.setOnWebsiteClickListener(misesTopSiteModel -> {
             if (mNewsClickListener != null) {
                 mNewsClickListener.onClick(misesTopSiteModel.getUrl());
@@ -547,10 +553,16 @@ public class MisesHomePageView extends LinearLayout implements View.OnClickListe
 
     public void setOnMisesNtpListener(MisesOnNtpListener listener) {
         mMisesNtpListener = listener;
+        if (mToolbarView != null) {
+            mToolbarView.setOnMisesNtpListener(listener);
+        }
     }
 
     public void setOnNewsClickListener(MisesOnNewsClickListener listener) {
         mNewsClickListener = listener;
+        if (mToolbarView != null) {
+            mToolbarView.setOnNewsClickListener(listener);
+        }
     }
 
     public void setOnExpandListener(MisesOnExpandListener listener) {

@@ -3,7 +3,6 @@ package org.chromium.chrome.browser.ntp.ntp_hp.view.toolbar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,14 +14,19 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.chromium.chrome.browser.R;
+import org.chromium.chrome.browser.ntp.ntp_hp.common.MisesConstants;
+import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNewsClickListener;
+import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNtpListener;
 
 /**
  * Created by gudd on 2024/12/20.
  */
 public class MisesToolbarView extends ConstraintLayout implements View.OnClickListener {
     private AppCompatImageView mAdPlace;
+    private ImageButton mSwitchButton;
     private ImageButton mMenuBtn;
-    private View.OnClickListener mOnClickListener;
+    private MisesOnNtpListener mOnNtpListener;
+    private MisesOnNewsClickListener mNewsClickListener;
 
     protected ImageView mToggleTabStackButton;
     protected MisesTabSwitcherDrawable mTabSwitcherButtonDrawableLight;
@@ -44,6 +48,8 @@ public class MisesToolbarView extends ConstraintLayout implements View.OnClickLi
         mAdPlace.setOnClickListener(this);
         mMenuBtn = findViewById(R.id.mises_menu_button);
         mMenuBtn.setOnClickListener(this);
+        mSwitchButton = findViewById(R.id.mises_tab_switcher_button);
+        mSwitchButton.setOnClickListener(this);
 
         inflateTabSwitchingResources();
     }
@@ -64,13 +70,21 @@ public class MisesToolbarView extends ConstraintLayout implements View.OnClickLi
         mToggleTabStackButton.setOnClickListener(this);
     }
 
-    public void setOnClickListener(View.OnClickListener onClickListener){
-        this.mOnClickListener = onClickListener;
-    }
-
     @Override
     public void onClick(View v) {
-        mOnClickListener.onClick(v);
+        if (v == mAdPlace){
+            if (mNewsClickListener != null) {
+                mNewsClickListener.onClick(MisesConstants.MISES_AIR_DROP);
+            }
+        }else if(v == mMenuBtn){
+            if (mOnNtpListener != null) {
+                mOnNtpListener.openAppMenu();
+            }
+        } else if (v == mSwitchButton) {
+            if (mOnNtpListener != null) {
+                mOnNtpListener.openMultiWindows();
+            }
+        }
 
         /*if (mToggleTabStackButton == v) {
             if (ChromeFeatureList.isInitialized()
@@ -80,6 +94,14 @@ public class MisesToolbarView extends ConstraintLayout implements View.OnClickLi
             }
             handleToggleTabStack();
         }*/
+    }
+
+    public void setOnMisesNtpListener(MisesOnNtpListener listener) {
+        mOnNtpListener = listener;
+    }
+
+    public void setOnNewsClickListener(MisesOnNewsClickListener listener) {
+        mNewsClickListener = listener;
     }
 
     public void updateTabCountVisuals(int numberOfTabs) {

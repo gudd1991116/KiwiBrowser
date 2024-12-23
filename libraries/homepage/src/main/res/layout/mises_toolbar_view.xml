@@ -32,10 +32,11 @@
         android:id="@+id/mises_menu_button"
         style="@style/MisesToolbarButton"
         android:contentDescription="@null"
-        android:src="@mipmap/mises_ic_more_vert_black_24dp"
+        android:src="@drawable/mises_btn_more_vert_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="10dp"
         app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

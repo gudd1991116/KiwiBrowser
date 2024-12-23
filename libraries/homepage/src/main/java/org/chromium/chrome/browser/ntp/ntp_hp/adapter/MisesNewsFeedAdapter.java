@@ -77,6 +77,10 @@ public class MisesNewsFeedAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyItemRangeInserted(startPosition, endPosition);
     }
 
+    public List<MisesNewsFeedModel.AdsModel> getData(){
+        return data;
+    }
+
     public HeaderViewHolder getHeaderView() {
         return mHeaderView;
     }

@@ -74,6 +74,7 @@ import org.chromium.ui.base.DeviceFormFactor;
 
 import org.chromium.chrome.browser.accessibility.NightModePrefs;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -313,8 +314,13 @@ public class NewTabPageView
             }
 
             @Override
-            public void showAppMenu() {
+            public void openAppMenu() {
+                Toast.makeText(activity, "openAppMenu", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void openMultiWindows() {
+                Toast.makeText(activity, "openMultiWindows", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -323,7 +329,6 @@ public class NewTabPageView
         homePageViewContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) homePageViewContainer.getLayoutParams();
         if (layoutParams != null) {
-            // todo gudd 临时设置homepageview的margin为0
             /*layoutParams.topMargin = getContext().getResources().getDimensionPixelSize(R.dimen.toolbar_height_no_shadow)
                     + getContext().getResources().getDimensionPixelSize(R.dimen.toolbar_progress_bar_height);*/
             if (homePageView.getParent() != null) {

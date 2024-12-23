@@ -10,5 +10,6 @@ public interface MisesOnNtpListener {
     void checkForBraveStats();
     void focusSearchBox();
     void launchWallet();
-    void showAppMenu();
+    void openAppMenu();
+    void openMultiWindows();
 }

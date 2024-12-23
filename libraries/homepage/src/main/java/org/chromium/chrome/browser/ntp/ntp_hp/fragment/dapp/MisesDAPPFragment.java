@@ -1,4 +1,4 @@
-package org.chromium.chrome.browser.ntp.ntp_hp.fragment;
+package org.chromium.chrome.browser.ntp.ntp_hp.fragment.dapp;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
