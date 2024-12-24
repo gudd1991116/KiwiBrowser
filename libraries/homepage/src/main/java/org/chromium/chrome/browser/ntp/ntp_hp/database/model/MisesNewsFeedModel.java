@@ -1,14 +1,21 @@
-package org.chromium.chrome.browser.ntp.ntp_hp.model;
+package org.chromium.chrome.browser.ntp.ntp_hp.database.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import org.chromium.chrome.browser.ntp.ntp_hp.adapter.MisesMultiItemEntity;
 import org.chromium.chrome.browser.ntp.ntp_hp.adapter.MisesNewsFeedAdapter;
+import org.chromium.chrome.browser.ntp.ntp_hp.database.convert.MisesStringListConvert;
 
 import java.util.List;
 
@@ -27,7 +34,9 @@ public class MisesNewsFeedModel {
         this.ads = ads;
     }
 
+//    @Entity(tableName = "mises_table_news")
     public static class AdsModel implements Parcelable , MisesMultiItemEntity {
+//        @PrimaryKey(autoGenerate = false)
         @SerializedName("_id")
         private String id;
         private String language;
@@ -36,8 +45,12 @@ public class MisesNewsFeedModel {
         private String link;
         private String title;
         private String description;
+
+//        @TypeConverters(MisesStringListConvert.class)
         private List<String> images;
+//        @TypeConverters(AdsEventConverter.class)
         private EventModel events;
+//        @TypeConverters(AdsAdditionConverter.class)
         private AdditionalModel additional;
 
         // 下面这些在获取详情页信息时才返回，列表中不返回
@@ -45,7 +58,9 @@ public class MisesNewsFeedModel {
         private String channel_image;
         private String summary;
         private long updated;
+//        @TypeConverters(MisesStringListConvert.class)
         private List<String> channel_categories;
+//        @TypeConverters(MisesStringListConvert.class)
         private List<String> keywords;
         private String author;
         private String channel_id;
@@ -333,6 +348,20 @@ public class MisesNewsFeedModel {
         }
     }
 
+    public static class AdsEventConverter{
+        @TypeConverter
+        public static String fromEventModel(EventModel eventModel) {
+            if (eventModel == null) return "";
+            return new Gson().toJson(eventModel);
+        }
+
+        @TypeConverter
+        public static EventModel fromString(String eventModelString){
+            if (eventModelString == null || TextUtils.isEmpty(eventModelString)) return null;
+            return new Gson().fromJson(eventModelString, EventModel.class);
+        }
+    }
+
     public static class AdditionalModel implements Parcelable{
         private long publishedAt;
         private String contentSourceDisplay;
@@ -390,6 +419,20 @@ public class MisesNewsFeedModel {
             dest.writeLong(publishedAt);
             dest.writeString(contentSourceDisplay);
             dest.writeString(contentSourceLogo);
+        }
+    }
+
+    public static class AdsAdditionConverter{
+        @TypeConverter
+        public static String fromEventModel(AdditionalModel additionalModel) {
+            if (additionalModel == null) return "";
+            return new Gson().toJson(additionalModel);
+        }
+
+        @TypeConverter
+        public static AdditionalModel fromString(String additionModelString){
+            if (additionModelString == null || TextUtils.isEmpty(additionModelString)) return null;
+            return new Gson().fromJson(additionModelString, AdditionalModel.class);
         }
     }
 }

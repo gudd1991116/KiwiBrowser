@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import org.chromium.chrome.browser.R;
 import org.chromium.chrome.browser.ntp.ntp_hp.adapter.MisesNewsFeedAdapter;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesCategoryModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsFeedModel;
+import org.chromium.chrome.browser.ntp.ntp_hp.database.model.MisesNewsFeedModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNewsClickListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesUrlPropertyModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesNetworkHelper;
@@ -38,7 +38,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MisesNewsV2Fragment extends Fragment {
-    private static final String TAG = "MisesNewsV2Fragment";
     private final String Log_msg_content = "mises news v2 fragment ,position :";
 
     public static MisesNewsV2Fragment newInstance(MisesCategoryModel categoryModel, int viewpagerIndex) {
@@ -241,20 +240,15 @@ public class MisesNewsV2Fragment extends Fragment {
                         if (mOnNewsClickListener != null) {
                             mOnNewsClickListener.onClick(linkHost.toString());
                         }
-                        /*if (!TextUtils.isEmpty(adsModel.getId()) && TextUtils.equals(MisesNewsFeedAdapter.AI_NEWS, adsModel.getType())) {
-                            MisesAiNewsDetailActivity.startActivity(getContext(), adsModel);
-                        } else {
-                            Log.d(TAG, String.format("click news: link=%s", adsModel.getLink()));
-                            if (mOnNewsClickListener != null) {
-                                mOnNewsClickListener.onClick(adsModel.getLink());
-                            }
-                        }*/
                     }
                 }
             });
         }
 
-        mRefreshLayout.setOnRefreshListener(this::refreshData);
+        mRefreshLayout.setOnRefreshListener(() -> {
+            firstReqCount = 0;
+            refreshData();
+        });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -294,7 +288,6 @@ public class MisesNewsV2Fragment extends Fragment {
 
     private void refreshData() {
         mOffset = 0;
-        firstReqCount = 0;
         Log.i("mises_log", Log_msg_content + position + ", refreshData.");
         getData(mCategoryUrl, true);
     }

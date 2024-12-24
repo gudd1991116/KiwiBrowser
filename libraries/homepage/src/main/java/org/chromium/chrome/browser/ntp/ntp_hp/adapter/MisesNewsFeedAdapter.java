@@ -22,7 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import org.chromium.chrome.browser.R;
 import org.chromium.chrome.browser.ntp.ntp_hp.helper.MisesRVHorizontalItemDecoration;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesCategoryModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsFeedModel;
+import org.chromium.chrome.browser.ntp.ntp_hp.database.model.MisesNewsFeedModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnItemClickListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesTimeUtil;
 

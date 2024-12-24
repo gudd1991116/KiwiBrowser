@@ -17,9 +17,8 @@ import androidx.core.text.HtmlCompat;
 import com.bumptech.glide.Glide;
 
 import org.chromium.chrome.browser.R;
-import org.chromium.chrome.browser.ntp.ntp_hp.adapter.MisesNewsFeedAdapter;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsDetailModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsFeedModel;
+import org.chromium.chrome.browser.ntp.ntp_hp.database.model.MisesNewsFeedModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesNetworkHelper;
 import org.chromium.chrome.browser.ntp.ntp_hp.utils.MisesTimeUtil;
 import org.commonmark.node.Node;

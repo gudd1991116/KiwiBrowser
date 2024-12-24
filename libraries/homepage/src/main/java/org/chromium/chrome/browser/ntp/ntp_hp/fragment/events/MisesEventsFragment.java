@@ -19,11 +19,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.gson.Gson;
 
 import org.chromium.chrome.browser.R;
-import org.chromium.chrome.browser.ntp.ntp_hp.MisesAiNewsDetailActivity;
 import org.chromium.chrome.browser.ntp.ntp_hp.adapter.MisesNewsFeedAdapter;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesCategoryModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsFeedModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnItemClickListener;
+import org.chromium.chrome.browser.ntp.ntp_hp.database.model.MisesNewsFeedModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesOnNewsClickListener;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesUrlPropertyModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.net.MisesNetworkHelper;

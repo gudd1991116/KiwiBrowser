@@ -5,7 +5,7 @@ import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesBaseModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesBitCoinModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesCategoryModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsDetailModel;
-import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesNewsFeedModel;
+import org.chromium.chrome.browser.ntp.ntp_hp.database.model.MisesNewsFeedModel;
 import org.chromium.chrome.browser.ntp.ntp_hp.model.MisesTopSiteModel;
 
 import java.util.List;

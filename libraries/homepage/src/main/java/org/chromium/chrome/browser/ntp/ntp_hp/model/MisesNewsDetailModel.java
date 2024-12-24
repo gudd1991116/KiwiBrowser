@@ -1,5 +1,7 @@
 package org.chromium.chrome.browser.ntp.ntp_hp.model;
 
+import org.chromium.chrome.browser.ntp.ntp_hp.database.model.MisesNewsFeedModel;
+
 /**
  * Created by gudd on 2024/11/12.
  */
